@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>iPhone</title>
+<style>
+:root{--bg:#000;--ink:#fff;--glass:rgba(40,40,42,.86);--sub:rgba(255,255,255,.55)}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{height:100%;background:#000;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;overflow:hidden}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#scaler{width:390px;height:844px;flex:none;transform-origin:center}
+#phone{position:relative;width:390px;height:844px;border-radius:56px;background:#000;box-shadow:0 0 0 10px #1b1b1d,0 0 0 12px #3a3a3d,0 30px 80px rgba(0,0,0,.6);overflow:hidden}
+.power{position:absolute;right:-16px;top:210px;width:5px;height:90px;background:#3a3a3d;border-radius:0 3px 3px 0;cursor:pointer;z-index:50}
+.screen{position:absolute;inset:0;background:var(--wp,#050506) center/cover no-repeat,#050506}.screen::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.05) 40%,rgba(0,0,0,.35))}
+/* status bar */
+.status{position:absolute;top:0;left:0;right:0;height:54px;padding:18px 34px 0 38px;display:flex;justify-content:space-between;font-size:15px;font-weight:600;z-index:40;pointer-events:none}
+.status .r{display:flex;gap:6px;align-items:center;font-size:14px}
+.bars{display:flex;gap:2px;align-items:flex-end;height:11px}.bars i{width:3px;background:#fff;border-radius:1px}
+.batt{width:26px;height:12px;border-radius:4px;background:rgba(255,255,255,.35);position:relative;overflow:hidden}.batt b{position:absolute;inset:0 30% 0 0;background:#fff}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:35px;border-radius:20px;background:#000;z-index:41;box-shadow:0 0 0 1px rgba(255,255,255,.06)}
+/* lock */
+#lock{position:absolute;inset:0;z-index:20;background:var(--wp,#050506) center/cover no-repeat,#050506;transition:transform .45s cubic-bezier(.3,.8,.3,1),opacity .45s}
+#lock::before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.05) 40%,rgba(0,0,0,.35))}
+#lock.off{transform:translateY(-100%);opacity:0;pointer-events:none}
+.date{position:absolute;top:92px;width:100%;text-align:center;font-size:20px;font-weight:500;color:rgba(255,255,255,.85)}
+.clock{position:absolute;top:116px;width:100%;text-align:center;font-size:96px;font-weight:600;letter-spacing:-2px;line-height:1}
+.notifs{position:absolute;top:232px;left:16px;right:16px;display:flex;flex-direction:column;gap:8px}
+.n{background:var(--glass);backdrop-filter:blur(20px);border-radius:24px;padding:13px 14px;display:flex;gap:11px;align-items:center;animation:in .5s both}
+.n:nth-child(2){animation-delay:.08s}.n:nth-child(3){animation-delay:.16s}.n:nth-child(4){animation-delay:.24s}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+.av{position:relative;flex:none;width:42px;height:42px;border-radius:50%;background:#8e8e93;display:grid;place-items:center;font-size:13px;color:#fff}
+.av u{position:absolute;right:-4px;bottom:-4px;width:20px;height:20px;border-radius:6px;background:#34c759;display:grid;place-items:center;font-size:11px;text-decoration:none}
+.n .t{flex:1;min-width:0}.n .h{display:flex;justify-content:space-between;font-weight:600;font-size:15px}.n .h span{font-weight:400;font-size:13px;color:var(--sub)}
+.n .m{font-size:15px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fab{position:absolute;bottom:62px;width:46px;height:46px;border-radius:50%;background:rgba(60,60,62,.7);display:grid;place-items:center;font-size:19px}
+.hint{position:absolute;bottom:24px;width:100%;text-align:center;font-size:13px;color:var(--sub);animation:pulse 2.2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.bar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#fff;z-index:45;cursor:pointer}
+.bar::after{content:"";position:absolute;inset:-14px -20px}
+/* home */
+#home{position:absolute;inset:0;z-index:10;padding:76px 20px 0;transition:transform .35s,filter .35s}
+#home.back{transform:scale(.9);filter:brightness(.5)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);row-gap:20px;justify-items:center}
+.app{width:74px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;position:relative;font-size:12px}
+.app:active .ic{transform:scale(.9)}
+.ic{position:relative;width:62px;height:62px;border-radius:15px;display:grid;place-items:center;font-size:30px;transition:transform .15s}
+.lb{max-width:74px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd{position:absolute;top:-8px;right:-10px;min-width:26px;height:26px;padding:0 7px;border-radius:13px;background:#ff3b30;color:#fff;font-size:14px;font-weight:500;display:grid;place-items:center;box-shadow:0 0 0 1px rgba(0,0,0,.15);z-index:2}
+.dots{position:absolute;bottom:128px;width:100%;left:0;display:flex;gap:8px;justify-content:center}.dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35)}.dots i:first-child{background:#fff}
+.dock{position:absolute;bottom:28px;left:14px;right:14px;height:90px;border-radius:34px;background:rgba(50,50,54,.6);backdrop-filter:blur(24px);display:flex;justify-content:space-around;align-items:center;padding:0 6px}
+.dock .app .lb{display:none}
+/* app window */
+#win{position:absolute;inset:0;z-index:30;background:#111;transform:scale(.2);opacity:0;pointer-events:none;border-radius:50px;transition:transform .35s cubic-bezier(.3,.8,.3,1),opacity .25s;overflow:hidden;transform-origin:var(--ox,50%) var(--oy,50%)}
+#win.open{transform:none;opacity:1;pointer-events:auto;border-radius:0}
+#win header{padding:64px 20px 14px;font-size:28px;font-weight:700;display:flex;align-items:center;gap:12px}
+#win header i{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:20px;font-style:normal}
+#win .body{padding:0 20px;overflow:auto;height:calc(100% - 140px);font-size:16px;line-height:1.5;color:#ddd}
+#win textarea{width:100%;height:340px;background:#1c1c1e;color:#fff;border:0;border-radius:14px;padding:14px;font:inherit;resize:none;user-select:text;outline:0}
+.row{background:#1c1c1e;border-radius:14px;padding:12px 14px;margin-bottom:8px}.row b{display:block;color:#fff}
+.cal{background:#fff;color:#000;border-radius:20px;padding:30px;text-align:center}.cal small{color:#ff3b30;font-weight:600;font-size:18px}.cal div{font-size:96px;font-weight:300;line-height:1.1}
+.btn{display:block;width:100%;margin-top:10px;padding:12px;border:0;border-radius:12px;background:#0a84ff;color:#fff;font-weight:600;font-size:16px;font-family:inherit;text-align:center;text-decoration:none;cursor:pointer}
+.btn.ghost{background:#2c2c2e}
+.sws{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 4px}.sw{height:84px;border-radius:12px;cursor:pointer;border:2px solid transparent}.sw:active{border-color:#fff}
+#win input[type=text],#wu{width:100%;margin-top:10px;padding:12px;border-radius:12px;border:0;background:#2c2c2e;color:#fff;font:inherit;user-select:text;outline:0}
+.lb{text-shadow:0 1px 3px rgba(0,0,0,.6)}
+/* passcode */
+.island{display:flex;align-items:center;padding-left:18px}#il{display:none;width:13px;height:16px}#phone.pcm #il{display:block}#phone.pcm .status{opacity:0}
+#pc{position:absolute;inset:0;z-index:25;opacity:0;pointer-events:none;transition:opacity .3s;background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(40px);backdrop-filter:blur(40px);display:flex;flex-direction:column;align-items:center}
+#pc.show{opacity:1;pointer-events:auto}
+.pt{margin-top:118px;font-size:19px;font-weight:500;height:24px}
+.pd{display:flex;gap:18px;margin-top:22px}.pd i{width:14px;height:14px;border:1.5px solid #fff;border-radius:50%;transition:background .12s}.pd i.on{background:#fff}
+.pd.shake{animation:shake .45s}@keyframes shake{20%,60%{transform:translateX(-13px)}40%,80%{transform:translateX(13px)}}
+.pk{display:grid;grid-template-columns:repeat(3,76px);gap:16px 22px;margin-top:56px}
+.k{width:76px;height:76px;border-radius:50%;border:0;background:rgba(255,255,255,.17);color:#fff;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:background .3s}
+.k:active{background:rgba(255,255,255,.55);transition:none}.k b{font-size:36px;font-weight:300;line-height:1.05}.k small{font-size:10px;font-weight:700;letter-spacing:2px;height:12px}.k.z{grid-column:2}
+.pf{position:absolute;bottom:58px;left:38px;right:38px;display:flex;justify-content:space-between;font-size:17px;white-space:nowrap}.pf span{cursor:pointer}
+#win .body{padding:0;height:100%;overflow:auto;background:#000;color:#fff;line-height:1.3}#win header{display:none}
+.v{min-height:100%;display:flex;flex-direction:column;position:relative}
+.hd{position:sticky;top:0;z-index:5;background:#000;padding:54px 16px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:17px}
+.bk{color:#0a84ff;cursor:pointer}.tl{font-size:34px;font-weight:700;padding:4px 18px 8px}
+.sr{margin:0 16px 8px;background:#1c1c1e;border-radius:12px;padding:9px 12px;color:#8e8e93;font-size:16px}
+.li{display:flex;align-items:center;gap:12px;padding:0 14px;cursor:pointer}.li .tx{flex:1;min-width:0;padding:11px 0;border-bottom:1px solid #262628}
+.r{display:flex;justify-content:space-between;gap:8px}.li small,.li .s{color:#8e8e93;font-size:15px}.li .s{display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pa{width:50px;height:50px;border-radius:50%;background:#a1a1aa;flex:none;display:grid;place-items:center;overflow:hidden}.pa svg{width:28px;fill:#fff}
+.ud{width:10px;height:10px;border-radius:50%;background:#0a84ff;flex:none}
+.th{display:flex;flex-direction:column;gap:6px;padding:10px 14px 16px}
+.bb{max-width:76%;padding:8px 13px;border-radius:18px;font-size:16px;line-height:1.35;word-break:break-word}.bb.them{align-self:flex-start;background:#2c2c2e}.bb.me{align-self:flex-end;background:var(--me,#0a84ff)}
+.tm2{align-self:center;color:#8e8e93;font-size:12px;margin-top:6px}
+.ib{position:sticky;bottom:0;margin:auto 12px 30px;padding:9px 14px;border:1px solid #3a3a3c;border-radius:20px;color:#8e8e93;background:#000}
+.nb{position:sticky;bottom:0;margin-top:auto;background:#0c0c0d;display:flex;justify-content:space-around;padding:10px 0 32px;border-top:1px solid #222;font-size:11px;text-align:center}
+.bt{flex:1;text-align:center;background:#262629;border-radius:10px;padding:9px;font-weight:600;font-size:15px}
+.em{text-align:center;margin:90px 0;font-size:46px}.em b{font-size:17px}
+.gr{display:grid;grid-template-columns:repeat(3,1fr);gap:1px}.gr>div{aspect-ratio:1;cursor:pointer}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 12px}.g2>div{aspect-ratio:4/5;border-radius:12px}
+.ch{display:flex;gap:8px;padding:8px 12px;font-size:14px}.ch span{background:#272727;padding:7px 12px;border-radius:9px}.ch .on{background:#fff;color:#000}
+.gh{font-size:20px;font-weight:700;padding:14px 18px 6px}.nr{background:#1c1c1e;margin:0 16px;padding:10px 14px;border-bottom:1px solid #2c2c2e;cursor:pointer}.nr small{color:#8e8e93}
+.cv{width:50px;height:50px;border-radius:6px;flex:none}.np{position:sticky;bottom:72px;margin:auto 10px 0;background:#1c1c1e;border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:10px}
+.pl{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:50%;background:#1ed760;color:#000;font-size:20px}
+@media (prefers-reduced-motion:no-preference){.th{scroll-behavior:smooth}}
+#gz{position:absolute;left:0;right:0;bottom:0;height:44px;z-index:44;touch-action:none;pointer-events:none}#phone.app #gz{pointer-events:auto}
+#lock,#gz{touch-action:none}
+/* credit */
+.credit{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);font-size:12px;color:#666;z-index:99}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ===== v2: Instagram + Zalo giống thật ===== */
+.v.ig{background:#0a0d12;color:#fff}.ig .hd{background:#0a0d12}.ig .sr{background:#262a31}
+.igh{display:flex;justify-content:space-between;align-items:center;padding:58px 18px 12px}.igh b{font-size:19px;font-weight:700;display:flex;align-items:center;gap:6px}
+.igp{display:flex;align-items:center;gap:18px;padding:8px 18px 14px}
+.iga{width:88px;height:88px;border-radius:50%;flex:none;background:#8e8e93 center/cover;display:grid;place-items:center;overflow:hidden}.iga svg{width:48px;fill:#fff}
+.igi{flex:1;min-width:0}.igi .nm{font-size:15px;font-weight:300;margin-bottom:6px}
+.igs{display:flex;justify-content:space-between;gap:10px}.igs div{display:flex;flex-direction:column;font-size:14px;line-height:1.15}.igs b{font-size:18px;font-weight:700}
+.igbt{display:flex;gap:8px;padding:2px 16px 16px}.igbt div{flex:1;height:33px;border-radius:9px;background:#2b2f36;font-weight:600;font-size:14px;display:grid;place-items:center}.igbt .sm{flex:none;width:38px}
+.igtb{display:flex;border-bottom:1px solid #262a31}.igtb span{flex:1;height:44px;display:grid;place-items:center;color:#8e939b;border-bottom:1.5px solid transparent}.igtb .on{color:#fff;border-color:#fff}
+.ige{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding-bottom:40px}.ige i{width:84px;height:84px;border:2px solid #fff;border-radius:50%;display:grid;place-items:center}.ige b{font-size:19px}
+.ign{position:sticky;bottom:0;margin-top:auto;background:#0a0d12;display:flex;justify-content:space-around;align-items:center;padding:12px 0 34px}.ign>span{position:relative;display:grid;place-items:center;cursor:pointer}
+.rd{position:absolute;right:-3px;bottom:-5px;width:9px;height:9px;border-radius:50%;background:#ff2e4d}
+.ia{display:block;width:28px;height:28px;border-radius:50%;background:#8e8e93 center/cover;border:1.5px solid rgba(255,255,255,.85)}
+.v.z{background:#fff;color:#111}.zh{position:sticky;top:0;z-index:5;background:#1f7fff;color:#fff;display:flex;align-items:center;gap:12px;padding:56px 16px 12px}.zph{flex:1;font-size:17px;opacity:.9}
+.zr{display:flex;align-items:center;gap:14px;padding-left:16px;cursor:pointer}.zr .pa{width:58px;height:58px}
+.zr.pin{position:relative;background:#f1f2f5}
+.zpin{position:absolute;right:16px;bottom:9px;color:#8a8f98;transform:rotate(45deg);line-height:0}.zr .tx{flex:1;min-width:0;padding:15px 0;border-bottom:1px solid #eceef2}.zr b{display:block;font-size:17px;font-weight:600;color:#111}.zr .s{display:block;margin-top:3px;font-size:15px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zr small{margin-right:16px;color:#8a8f98;font-size:14px}.zr i.on{width:11px;height:11px;margin-right:18px;border-radius:50%;background:#34c759}
+.zb{position:sticky;bottom:0;margin-top:auto;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:space-around;padding:8px 0 32px}.zb span{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-width:70px}.zb small{font-size:11px}
+.zb .za{min-width:0;width:28px;height:28px}
+.za{display:block;width:28px;height:28px;border-radius:50%;background:#222 center/cover;flex:none}
+.zg{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 0;padding:22px 10px 18px;text-align:center;font-size:15px}.zg div{display:flex;flex-direction:column;align-items:center;gap:8px}.zg span{width:62px;height:62px;border-radius:16px;border:1px solid #e5e7eb;display:grid;place-items:center;font-size:28px}
+.zgap{height:10px;background:#f1f3f6}.z2{display:flex;justify-content:space-between;align-items:center;margin-left:50px;padding:20px 16px 20px 0;border-bottom:1px solid #eceef2;font-size:17px;font-weight:500}.z2 em{color:#b0b5bd;font-style:normal;font-size:22px}
+.tg{width:52px;height:30px;border-radius:15px;background:#e3e5e8;position:relative}.tg::after{content:"";position:absolute;left:2px;top:2px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.zemp{margin:120px 0;text-align:center;color:#8a8f98}
+.v.zt{background:#e4ebf3;color:#111}.zth{display:flex;flex-direction:column;gap:6px;padding:12px}.zt .bb{border-radius:14px}.zt .bb.them{background:#fff;color:#111}.zt .bb.me{background:#d4e8ff;color:#111}.zt .tm2{color:#6b7280}
+.zin{position:sticky;bottom:0;margin-top:auto;background:#fff;padding:14px 16px 36px;color:#9aa0a8;font-size:17px}
+#phone.zl .bar{background:#111}
+/* ===== v3: Nhạc, YouTube, Safari, Ảnh ===== */
+#phone.lt .status{color:#000}#phone.lt .bars i{background:#000}#phone.lt .batt{background:rgba(0,0,0,.3)}#phone.lt .batt b{background:#000}#phone.lt .bar{background:#111}
+.v.lm{background:#fff;color:#000}
+/* Ghi âm: trình nghe */
+.vmr .li{cursor:pointer}
+.vmr.open{background:#1c1c1e;border-radius:14px;margin:0 8px}
+.vpl{padding:2px 14px 14px}
+.vwf{position:relative;height:70px;display:flex;align-items:center;gap:2px;touch-action:none;cursor:pointer}
+.vwf i{flex:1;min-width:1px;background:#5b5b60;border-radius:2px}
+.vwf i.on{background:#e5e5ea}
+.vph{position:absolute;top:-4px;bottom:-4px;width:2px;left:0;margin-left:-1px;background:#ff453a;border-radius:1px;pointer-events:none}
+.vph::before{content:"";position:absolute;top:-3px;left:-3px;width:8px;height:8px;border-radius:50%;background:#ff453a}
+.vtm{display:flex;justify-content:space-between;font-size:12px;color:#8e8e93;font-variant-numeric:tabular-nums;margin-top:6px}
+.vc{display:flex;justify-content:center;align-items:center;gap:40px;margin-top:6px;color:#fff}
+.vc span{display:grid;place-items:center;width:60px;height:56px;cursor:pointer}
+/* thanh cuộn mảnh */
+#wb::-webkit-scrollbar{width:3px;height:3px}
+#wb::-webkit-scrollbar-track{background:transparent}
+#wb::-webkit-scrollbar-thumb{background:rgba(128,128,128,.55);border-radius:3px}
+@supports not selector(::-webkit-scrollbar){#wb{scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.55) transparent}}
+/* Instagram: khung chat + trả lời tin (story) */
+.ihd{justify-content:flex-start}
+.ihd b{flex:1;font-size:16px;font-weight:600;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ihd .pa{width:30px;height:30px}.ihd .pa svg{width:17px}
+.ihi{display:flex;align-items:center;gap:18px}
+.sr2{align-self:flex-start;display:flex;flex-direction:column;align-items:flex-start;gap:3px;max-width:76%}
+.sr2.me{align-self:flex-end;align-items:flex-end}
+.srl{display:flex;align-items:center;gap:5px;font-size:12px;color:#a8a8a8;margin-top:4px}
+.srs{width:104px;aspect-ratio:9/16;border-radius:16px;background-color:#262626;opacity:.92;display:grid;place-items:center;text-align:center;font-size:12px;line-height:1.3;color:#8e8e8e;padding:8px;box-sizing:border-box}
+.sr2 .bb{max-width:100%}
+.sre{font-size:40px;line-height:1.15}
+.mr{cursor:pointer}.mr.on .tx>div{color:#ff2d55}
+.mbot{position:sticky;bottom:0;margin-top:auto;z-index:6}
+.mbot .mtb{position:static;margin-top:0}
+.mpl{display:flex;align-items:center;gap:12px;margin:0 8px 6px;padding:8px 14px 8px 8px;background:rgba(238,238,241,.98);border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.18);color:#000;cursor:pointer}
+.mpl .cv{width:40px;height:40px}
+.mpl b{flex:1;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mpl span{display:grid;place-items:center;width:30px}
+/* màn hình Đang phát */
+#np{position:absolute;inset:0;z-index:60;background:#222;color:#fff;overflow:hidden;transform:translateY(102%);transition:transform .45s cubic-bezier(.3,.8,.3,1);pointer-events:none}
+#np.open{transform:none;pointer-events:auto}
+.npbg{position:absolute;inset:-80px;background:#555 center/cover;filter:blur(60px) saturate(1.8) brightness(.65);transform:scale(1.3)}
+.npw{position:relative;height:100%;display:flex;flex-direction:column;padding:50px 28px 30px}
+.npg{width:40px;height:5px;border-radius:3px;background:rgba(255,255,255,.45);margin:0 auto 14px;box-sizing:content-box;border:12px solid transparent;background-clip:padding-box;flex:none;cursor:pointer}
+.npa{flex:none;margin:0 0 20px}
+.npart{width:100%;aspect-ratio:1;border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.5);transform:scale(.84);transition:transform .5s cubic-bezier(.3,.8,.3,1)}
+#np.playing .npart{transform:none}
+.npt{display:flex;align-items:center;gap:10px}
+.npt>div{flex:1;min-width:0}
+.npt b{display:block;font-size:22px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.npt span{display:block;font-size:20px;color:rgba(255,255,255,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.npt i{font-style:normal;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:14px;flex:none}
+.npb{position:relative;height:20px;margin-top:18px;cursor:pointer;touch-action:none}
+.npb::before{content:"";position:absolute;left:0;right:0;top:8px;height:5px;border-radius:3px;background:rgba(255,255,255,.28)}
+.npf{position:absolute;left:0;top:8px;height:5px;border-radius:3px;background:rgba(255,255,255,.88);width:0}
+.npm{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.55);font-variant-numeric:tabular-nums}
+.npc2{display:flex;justify-content:center;align-items:center;gap:44px;margin:14px 0 6px}
+.npc2 span{display:grid;place-items:center;width:64px;height:64px;cursor:pointer}
+.npv{display:flex;align-items:center;gap:10px;margin-top:14px;color:rgba(255,255,255,.65)}
+.npv input{flex:1;accent-color:#fff;height:4px}
+.npx{display:flex;justify-content:space-around;margin-top:auto;padding-top:14px;color:rgba(255,255,255,.62)}.lm .hd{background:#fff}.mt{font-size:34px;font-weight:800;padding:6px 18px 12px}
+.mb{display:flex;gap:14px;padding:0 18px 16px}.mb div{flex:1;height:50px;border-radius:12px;background:#efeff1;color:#ff2d55;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center;gap:8px}
+.mr{display:flex;align-items:center;gap:12px;padding:8px 18px 0}.mr .cv{width:52px;height:52px;border-radius:7px}.mr .tx{flex:1;min-width:0;padding:6px 0 10px;border-bottom:1.5px solid #dcdce0}.mr .tx div{font-size:17px}.mr .tx span{display:block;color:#8e8e93;font-size:15px}.mr em{color:#8e8e93;font-style:normal;font-size:22px;letter-spacing:1px}
+.cv.mn{background:linear-gradient(#ff6b81,#ff2d55);color:#fff;display:grid;place-items:center;font-size:24px}
+.mtb{position:sticky;bottom:0;margin-top:auto;background:rgba(248,248,250,.95);border-top:1px solid #e3e3e6;display:flex;justify-content:space-around;padding:9px 0 30px}.mtb span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;color:#8e8e93;min-width:62px}
+.v.yt{background:#0f0f0f;color:#fff}.yh{position:sticky;top:0;z-index:5;background:#0f0f0f;display:flex;align-items:center;gap:12px;padding:54px 14px 8px}.yp{flex:1;background:#272727;border-radius:20px;padding:9px 14px;font-size:17px;display:flex;justify-content:space-between}
+.ych{display:flex;gap:8px;padding:8px 12px;overflow:hidden;font-size:15px;font-weight:500}.ych span{background:#272727;padding:8px 14px;border-radius:10px;white-space:nowrap}.ych .on{background:#fff;color:#000}
+.yg{display:grid;grid-template-columns:1fr 1fr;gap:18px 8px;padding:8px 10px}.yv{aspect-ratio:9/13.5;border-radius:14px;display:flex;align-items:flex-end;padding:10px;font-size:13px;font-weight:600}.ym{display:flex;gap:8px;margin-top:10px;font-size:13px;color:#aaa}.ym b{display:block;color:#ddd;font-size:15px;font-weight:500}.ym i{width:34px;height:34px;border-radius:50%;flex:none}
+.ynb{position:sticky;bottom:0;margin-top:auto;background:#0f0f0f;display:flex;justify-content:space-around;align-items:center;padding:8px 0 30px;font-size:11px}.ynb span{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:64px}.ynb .pl2{width:40px;height:40px;border-radius:50%;background:#272727;display:grid;place-items:center}
+.v.sf{background:#f2f2f7;color:#000}.sfh{display:flex;align-items:center;gap:14px;padding:56px 16px 10px}.sfs{flex:1;background:#fff;border-radius:12px;padding:11px 12px;display:flex;align-items:center;gap:8px;color:#9a9aa0;font-size:17px;box-shadow:0 1px 3px rgba(0,0,0,.08)}.sfs u{width:2px;height:20px;background:#0a84ff;animation:pulse 1s infinite}.sf .bl{color:#0a84ff;font-size:17px}
+.sft{display:flex;justify-content:space-between;align-items:center;padding:14px 20px 8px}.sft b{font-size:20px}.sfl{background:#fff;border-radius:14px;margin:0 16px 50px;padding-left:14px}
+.sfr{display:flex;align-items:center;gap:12px;color:#8e8e93}.sfr div{flex:1;padding:11px 14px 11px 0;border-bottom:1px solid #d9d9de;font-size:17px;line-height:1.15;color:#000}.sfr:last-child div{border:0}
+.v.lp{background:#fff;color:#000}.phc{text-align:right;padding:58px 18px 0;color:#0a84ff;font-size:17px}.pht{font-size:34px;font-weight:800;padding:12px 18px 0}.phn{padding:0 18px 12px;color:#8e8e93;font-size:16px}
+.phm{font-size:22px;font-weight:800;padding:16px 18px 10px}.ph3{gap:2px}
+.phs{position:sticky;bottom:34px;align-self:center;margin-top:8px;display:flex;background:rgba(246,246,248,.92);backdrop-filter:blur(14px);border-radius:30px;padding:4px;box-shadow:0 4px 20px rgba(0,0,0,.18);font-size:14px;font-weight:700;text-align:center}.phs span{padding:12px 16px;border-radius:26px}.phs .on{background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.15)}
+.pvs{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;flex:1;min-height:560px;scrollbar-width:none}.pvs::-webkit-scrollbar{display:none}.pvs>div{flex:none;width:100%;scroll-snap-align:center}
+.pva{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);display:flex;justify-content:space-between;padding:0 10px;pointer-events:none;z-index:3}.pva span{pointer-events:auto;cursor:pointer;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.32);color:#fff;font-size:30px;line-height:1;padding-bottom:3px;backdrop-filter:blur(6px);user-select:none}
+.pvs{cursor:grab;user-select:none}.pvs:active{cursor:grabbing}
+/* ===== v4: TikTok ===== */
+.v.tt{position:relative;overflow:hidden;color:#fff}.v.ttl{background:#fff;color:#000}
+.ttm{position:absolute;top:54px;left:0;right:0;bottom:84px;background:#111 center/cover}.ttm video{width:100%;height:100%;object-fit:cover}
+.tth{position:absolute;top:58px;left:0;right:0;display:flex;align-items:center;gap:14px;padding:0 14px;z-index:3;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.lv{border:1.6px solid #fff;border-radius:5px;font-size:9px;font-weight:900;padding:3px 3px;letter-spacing:-.3px}.tts{flex:1;display:flex;gap:16px;font-size:15px;font-weight:600;color:rgba(255,255,255,.72);white-space:nowrap;overflow:hidden}.tts .on{color:#fff;border-bottom:2px solid #fff;padding-bottom:3px}.tts i{font-style:normal;background:#fe2c55;color:#fff;border-radius:9px;font-size:11px;padding:1px 5px;margin-left:2px;vertical-align:top}
+.gf{position:absolute;left:14px;top:112px;z-index:3;text-align:center;font-size:22px;line-height:1}.gf span{display:block;background:#fe2c55;border-radius:4px;font-size:9px;font-weight:700;padding:2px 4px;margin-top:-4px}
+.ttr{position:absolute;right:8px;bottom:122px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:13px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.5)}.ttr div{display:flex;flex-direction:column;align-items:center}
+.tav{width:54px;height:54px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#25c3ff,#00f0b5);position:relative;margin-bottom:12px;cursor:pointer}.tav b{display:block;width:100%;height:100%;border-radius:50%;background:#444 center/cover}.tav i{position:absolute;left:16px;bottom:-9px;width:22px;height:22px;border-radius:50%;background:#fe2c55;display:grid;place-items:center;font-style:normal;font-size:17px;line-height:1}
+.dsc{width:44px;height:44px;border-radius:50%;background:radial-gradient(#7a3cff,#1a1030);border:6px solid #222;margin-top:6px}
+.ttb{position:absolute;left:12px;right:76px;bottom:126px;z-index:3;text-shadow:0 1px 3px rgba(0,0,0,.6);font-size:17px;font-weight:700;line-height:1.3}.ttb .rp{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:14px}.ttb .rp u{background:rgba(255,255,255,.92);color:#000;border-radius:14px;padding:5px 12px;text-decoration:none}.ttb .rp i{width:26px;height:26px;border-radius:50%;background:#555 center/cover}
+.ttb em{font-style:normal;background:rgba(80,80,80,.7);border-radius:6px;font-size:13px;padding:2px 7px;margin-left:6px}.ttb small{display:block;font-size:14px;opacity:.7;margin-top:2px}.ttb p{font-size:14px;margin-top:6px}
+.ttq{position:absolute;left:0;right:0;bottom:84px;height:34px;z-index:3;background:rgba(70,70,70,.65);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:14px;font-weight:700}
+.ttd{position:absolute;left:0;right:0;bottom:262px;display:flex;justify-content:center;gap:7px;z-index:3}.ttd i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.45)}.ttd i:first-child{background:#fff}
+.ttn{position:absolute;left:0;right:0;bottom:0;height:84px;z-index:4;display:flex;justify-content:space-around;align-items:flex-start;padding-top:8px;font-size:11px;font-weight:700}.ttn span{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:64px;cursor:pointer}
+.pls{font-style:normal;width:52px;height:34px;border-radius:10px;background:var(--c);color:var(--k);display:grid;place-items:center;font-size:28px;font-weight:700;line-height:1;box-shadow:-3px 0 0 #20d5ec,3px 0 0 #fe2c55;margin-top:2px}
+.b99{position:absolute;top:-5px;left:30px;background:#fe2c55;color:#fff;border-radius:10px;font-size:11px;padding:1px 6px}.rd2{position:absolute;top:-2px;right:12px;width:9px;height:9px;border-radius:50%;background:#fe2c55}
+.tpw{height:100%;overflow:hidden;display:flex;flex-direction:column}.tps{flex:1;overflow:auto;padding-bottom:90px}
+.tph{display:flex;justify-content:space-between;align-items:center;padding:58px 18px 12px}.tph div{display:flex;gap:16px;align-items:center}
+.tpn{display:flex;justify-content:space-between;align-items:center;padding:6px 18px}.tpn h1{font-size:34px;font-weight:800;line-height:1.1;display:flex;align-items:center;gap:8px}.tpn small{display:block;color:#8a8a8f;font-weight:700;font-size:16px;margin-top:4px}
+.tpa{width:96px;height:96px;border-radius:50%;background:#444 center/cover;flex:none;position:relative}.tpa.rg{box-shadow:0 0 0 3px #fff,0 0 0 6px #20b8ff}.tpa i{position:absolute;right:-2px;bottom:-2px;width:26px;height:26px;border-radius:50%;background:#20d5ec;color:#fff;display:grid;place-items:center;font-style:normal;font-size:20px;font-weight:700}
+.tpst{display:flex;gap:28px;padding:6px 18px}.tpst b{display:block;font-size:20px;font-weight:800}.tpst span{color:#8a8a8f;font-weight:600;font-size:16px}
+.tpb{display:flex;gap:8px;padding:14px 16px}.tpb div{height:46px;border-radius:23px;background:#f1f1f2;font-weight:700;font-size:17px;display:grid;place-items:center}.tpb .fl{flex:1.3;background:#fe2c55;color:#fff}.tpb .ms{flex:1.4}.tpb .ad{width:46px}
+.tpbio{padding:0 18px 14px;font-size:16px}.tphl{display:flex;gap:16px;padding:0 18px 18px}.tphl div{text-align:center;font-size:14px;font-weight:600}.tphl i{display:block;width:62px;height:62px;border-radius:50%;border:3px solid #e1e1e3;background:#ccc center/cover;margin-bottom:4px;box-shadow:inset 0 0 0 2px #fff}
+.tpc{display:flex;gap:8px;padding:0 16px 14px}.tpc span{border:1px solid #e1e1e3;border-radius:20px;padding:9px 12px;font-weight:700;font-size:15px;white-space:nowrap}
+.tpt{display:flex;justify-content:space-around;border-bottom:1px solid #eee}.tpt span{padding:10px 18px 8px;border-bottom:2.5px solid transparent;color:#777;display:flex;align-items:center;gap:2px}.tpt .on{border-color:#000;color:#000}
+.tpg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px}.tpg div{aspect-ratio:3/4;background:#999 center/cover;position:relative;color:#fff;font-weight:700;font-size:14px;text-shadow:0 1px 3px rgba(0,0,0,.6)}.tpg b{position:absolute;left:6px;top:6px;font-size:17px}.tpg span{position:absolute;left:6px;bottom:6px;display:flex;align-items:center;gap:4px}
+.tpe{text-align:center;color:#8a8a8f;font-weight:700;font-size:17px;padding:18px}
+.zst{width:120px;height:120px;object-fit:contain;background:none}.zst.me{align-self:flex-end}.zst.them{align-self:flex-start}
+.zsn{align-self:flex-start;font-size:12px;color:#6b7280;margin:4px 0 -2px 6px}
+.ig .gr>div{cursor:default}
+.igph{display:block;max-width:62%;max-height:340px;border-radius:18px;object-fit:cover}.igph.me{align-self:flex-end}.igph.them{align-self:flex-start}.igph.ph{width:200px;height:260px;background:#2a2d33}
+</style>
+</head>
+<body>
+<div id="stage"><div id="scaler"><div id="phone">
+  <div class="power" id="power" title="Khóa màn hình"></div>
+  <div class="screen"></div>
+  <div class="island"><svg id="il" viewBox="0 0 13 16" fill="#fff"><rect y="6" width="13" height="10" rx="2.5"/><path d="M3.2 7V4.6a3.3 3.3 0 0 1 6.6 0V7" fill="none" stroke="#fff" stroke-width="1.7"/></svg></div>
+  <div class="status"><span class="tm">11:21</span><span class="r"><span class="bars"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:11px"></i></span>5G<span class="batt"><b></b></span></span></div>
+
+  <div id="home"><div class="grid" id="grid"></div><div class="dots"><i></i><i></i></div><div class="dock" id="dock"></div></div>
+
+  <div id="lock">
+    <div class="date" id="date"></div><div class="clock tm">11:21</div>
+    <div class="notifs" id="notifs"></div>
+    <div class="fab" style="left:34px">🔦</div><div class="fab" style="right:34px">📷</div>
+    <div class="hint">Vuốt lên để mở khóa</div>
+  </div>
+
+  <div id="pc"><div class="pt" id="pt">Nhập mật khẩu</div><div class="pd" id="pd"></div><div class="pk" id="pk"></div>
+    <div class="pf"><span id="em">Tình huống khẩn cấp</span><span id="cn">Hủy bỏ</span></div></div>
+
+  <div id="win"><header><i id="wi"></i><span id="wt"></span></header><div class="body" id="wb"></div></div>
+  <div id="gz"></div>
+  <div class="bar" id="bar"></div>
+</div></div></div>
+
+<script>
+/* ====== TÙY CHỈNH NỘI DUNG Ở ĐÂY ====== */
+const DEFAULT_WP="photos/wonbinhinhnen.jpg";    // hình nền mặc định, ví dụ "wallpaper.jpg"
+const PASSCODE="0203"; // mật khẩu mở khóa (4–6 số)
+// 0) GIỜ & NGÀY CỐ ĐỊNH (không lấy giờ thật của máy). Muốn đổi: sửa time, d, m, y (thứ trong tuần tự tính).
+const NOW={time:"00:15",day:"",d:21,m:11,y:2026};
+NOW.day=["Chủ nhật","Thứ hai","Thứ ba","Thứ tư","Thứ năm","Thứ sáu","Thứ bảy"][new Date(NOW.y,NOW.m-1,NOW.d).getDay()];  // thứ trong tuần TỰ TÍNH theo ngày/tháng/năm, không cần ghi tay
+const ME={name:"Quan Binh",user:"qbinnie",avatar:"photos/avt.jpg"}; // avatar: ảnh đại diện, ví dụ "photos/avatar.jpg"
+
+// 1) THÔNG BÁO ở màn hình khóa
+const NOTIFS=[
+  {name:"Ba",ic:"📞",text:"3 cuộc gọi nhỡ",time:"8 phút trước"},
+  {name:"Anh Hai",ic:"📞",text:"5 cuộc gọi nhỡ",time:"10 phút trước"},
+  {name:"Mẹ",ic:"📞",text:"15 cuộc gọi nhỡ",time:"13 phút trước"},
+  {name:"Mẹ",ic:"💬",text:"Con làm gì mà không nghe máy?",time:"14 phút trước"},
+  {name:"Mẹ",ic:"💬",text:"Sao 12h rồi chưa về nhà?",time:"15 phút trước"}
+];
+
+// 2) TIN NHẮN. Mỗi người = 1 khối { }. unread:1 = có chấm xanh. msgs = từng tin ["them"|"me","nội dung","giờ"]
+//    "them" = người kia nhắn, "me" = bạn nhắn. Muốn thêm tin: thêm 1 dòng ["them","...","11:30"] vào msgs.
+const SMS=[  // tin nhắn nhà mạng / tổng đài. Không bấm vào được. unread:1 = có chấm xanh chưa đọc
+  {name:"BVHTTTDL",time:"08/11/26",unread:1,msgs:[["them","[TB] Hưởng ứng tuần văn hoá đại đoàn kết dân tộc, người dân và du khách trên cả nước tham gia các hoạt động văn hoá, nghệ thuật từ ngày 10/11 đến 14/11.","08:12"]]},
+  {name:"191",time:"08/11/26",msgs:[["them","Quy khach da dung het luu luong Data toc do cao. De tiep tuc su dung DV va lua chon goi cuoc phu hop, soan DATA gui 191. Chi tiet LH 198 (mien phi).","07:40"]]},
+  {name:"VIETTELPLUS",time:"05/11/26",unread:1,msgs:[["them","[TB] CHỈ CÒN 1 NGÀY ĐỂ NHẬN QUÀ trị giá lên đến 22.000 Tammi Xu từ chương trình tri ân khách hàng. Truy cập ứng dụng Viettel++ để nhận ngay.","09:30"]]},
+  {name:"9778",time:"04/11/26",unread:1,msgs:[["them","Tai khoan cua Quy khach sap het, soan UT gui 9778 (trong vong 48h) de duoc ung tien su dung dich vu. Chi tiet LH 198 (mien phi).","18:05"]]},
+  {name:"211",time:"04/11/26",unread:1,msgs:[["them","Tai khoan cua Quy khach sap het. Soan: 1 gui 211 de cong 15 phut noi mang (7 ngay). Chi tiet LH 198 (mien phi).","18:04"]]},
+  {name:"VIETTEL_5G",time:"04/11/26",unread:1,msgs:[["them","[TB] 5G CỰC CHẤT, KHÔNG CẦN WIFI! - 5G20: 20K/3 ngày có 6GB. Soạn 5G20 gửi 191 để đăng ký. Chi tiết LH 198 (miễn phí).","11:20"]]},
+  {name:"VIETTEL_KM",time:"04/11/26",unread:1,msgs:[["them","[TB] THẢ GA KẾT NỐI. Soạn GIC30N gửi 191: 30K/30 ngày có 10 phút gọi ngoại mạng và 100 phút gọi nội mạng. Chi tiết LH 198 (miễn phí).","11:18"]]},
+  {name:"BO CONG AN",time:"31/10/26",unread:1,msgs:[["them","[TB] Luật quản lý, sử dụng vũ khí, vật liệu nổ và công cụ hỗ trợ năm 2024 quy định các hành vi bị nghiêm cấm. Người dân tìm hiểu tại dichvucong.gov.vn.","10:00"]]}
+ ];
+/* Cú pháp viết tin nhắn gọn:  "# dd/mm" = sang ngày mới | "hh:mm > ..." = mình | "hh:mm < ..." = họ
+   Dòng không ghi giờ sẽ dùng lại giờ của dòng trên. Cho phép dùng dấu " thoải mái.
+   Chat nhóm: "< Tên người gửi | nội dung" để hiện tên người gửi. */
+const zc=s=>{let t="";return s.trim().split("\n").map(l=>l.trim()).filter(Boolean).map(l=>{
+  if(l[0]==="#"){const v=l.slice(1).trim(),m=v.match(/^(\d+)\/(\d+)$/);
+    return["day",m?["Chủ nhật","Thứ hai","Thứ ba","Thứ tư","Thứ năm","Thứ sáu","Thứ bảy"][new Date(NOW.y,m[2]-1,m[1]).getDay()]+", "+v:v]}
+  const m=l.match(/^(?:(\d+:\d+)\s+)?([<>])\s*(.*)$/);if(m[1])t=m[1].replace(/^(\d):/,"0$1:");
+  const q=m[2]==="<"&&m[3].match(/^(.{1,40}?)\s*\|\s*(.*)$/);
+  return q?["them",q[2],t,q[1]]:[m[2]===">"?"me":"them",m[3],t]})};
+// 3c) INSTAGRAM DM. Chỉ tài khoản có open:1 mới BẤM VÀO được; các tài khoản còn lại chỉ hiển thị (tin dài tự bị cắt "...")
+//     Thêm tài khoản chỉ-hiển-thị: {name:"ten_tk",time:"2 giờ",msgs:[["them","nội dung"]]},
+const IGDM=[
+  {name:"nhavy_ng",time:"8 giờ",msgs:[["them","dạo này dưới đó lạnh rồi, anh đi học nhớ mặc thêm áo ấm nha..."]]},
+  {name:"mai._.phuong",time:"10 giờ",msgs:[["them","anh bình dạo này lặn mất tăm lun, team điền kinh vắng anh buồn hiu 🥲"]]},
+  {name:"ngoc.babi_12a1",time:"13 giờ",msgs:[["them","bạn ơi mình là người xin in4 bạn tuần trước k biết bạn có nhớ k"]]},
+  {name:"thaomyyyy",time:"15 giờ",msgs:[["them","bình ơi up hình đi e nhớ a quáaaaaaa"]]},
+  {name:"vankietpham",time:"18 giờ",msgs:[["them","ê dm hôm qua ông đi học có chép bài văn không chụp tui xin với cứu cứu"]]},
+  {name:"shotarooo",avatar:"avtstr.jpg",time:"20 giờ",open:1,msgs:zc(`
+    # 01/08
+    19:30 > nay xui quá fjdsalkfjdksalfj
+          < jz cha
+          > điện thoại e rớt bể nát màn hình rồi
+          > sập nguồn bật không lên luôn
+          < chứ đang nhắn bằng cgi v cha
+          > đth mới
+          < vip
+          > vip j tiếc tiền cht mẹ
+          > dữ liệu cx k khôi phục dc luôn TT dc có tin nhắn zalo với ba mẹ =)))
+          > nghèo còn mắc cái eo
+          > g phải tiết kiệm th k về quê kco mà xài
+          < à cái vụ về quê htruoc kể á hả
+          < a tưởng e nói e xin ra ở trọ
+          > kco năn nỉ được
+          > hết ga hết số r
+          < =)))
+          < e tui
+          < mai đi ăn k
+          > ok TT
+          > a bao chứ hả
+          < giờ vd a nói k thì s
+          > ?
+    # 02/08
+    22:30 > gửi hình nãy chụp
+          < h (photos/str.jpg)
+          > th 6 quá thu hồi dùm
+          < ???
+          < đi trong tuần này ah
+          > uh ngày 5
+          < để kêu tụi thg trang thg sơn đi tiễn
+          > đừng có um sùm dùm nha quê lắm
+    # 18/08
+    21:00 < ổn k e tui
+          > cũng bth
+    # 12/09
+    20:30 > hnhu bt iu rui
+          > hihi
+          < e nào
+          < đẹp gái k
+          > có nhất thiết ph là con gái k
+          < vl =)))
+          < tiếc quá vụ này k gần nhà a
+          > đừng có kể cho sơn
+          < muộn r
+          > TRỜI ƠI LÀ TRỜI
+    # 2/11
+    17:00 > hồi a tẩy tóc nhuộm hồng là làm tại nhà đúng k z
+          < ùa sao á
+          > có tips and tricks nào để làm mà k bị quá rát
+          > cũng k bị rụng
+          > mà ph giữ màu lâu
+          > với lại tránh bị hói k?
+          < chỉ 1 lần th nha
+          < e quét thuốc lên xong e đợi
+          < đợi tầm 100 năm hơn gì đó á
+          < cái này tùy cơ địa mỗi người
+          < kiếp sau đầu thai thành ng tây
+          > cc
+          > lỡ thành ng tây mà tóc k vàng thì sao
+          < thì đợi thêm 100 năm nữa
+    # 20/11
+    03:50 > h (photos/outfit.jpg)
+          > ê nhìn ok k
+          < bình ơi bình k phải người tây đâu bình
+          < đừng có nhắn giờ mỹ
+          > dm hỏi thì rep trọng tâm đi ba
+          < đi chơi hay tiệc hay sinh nhật hay gì
+          > đi chơi tiệc sinh nhật
+          < =))) với ai
+          > biết làm j
+          < uk cc
+          < em huy j ph k
+          > biết r còn hỏi
+          > a coi có sót story nào của e đâu
+          < tại m spam story bạn thân mà bỏ có mình t vô
+          < là s nứa
+          > dạ ngại nhắn riêng ><
+          < bình ơi bình cũng k ph trai anime đâu nhé bình
+          < uh mà bộ đó nhìn được r, đi chơi hẹn hò thì v là ok
+          > e chốt bộ khác r
+          > xin cảm ơn vì ý kiến
+          < m ơi?
+  `)},
+  {name:"tram_cherry",time:"22 giờ",msgs:[["them","cuối tuần này anh rảnh hong, tui khao trà sữa ngã ba thị trấn nhe 🧋"]]},
+  {name:"tuandat.08",time:"1 ngày",msgs:[["them","m ráng giữ form nha, mốt lên đại học chạy giải tiếp."]]},
+  {name:"linhnguyennn",time:"1 ngày",msgs:[["them","anh ơi cho em làm quen với ạ 👉👈"]]},
+  {name:"thuy.tarot.healing",time:"2 ngày",msgs:[["them","bé ơi sắp rằm chị có ưu đãi trải bài tổng quan tháng, bé xem hong?"]]},
+  {name:"nam938_201",time:"2 ngày",msgs:[["them","giải trường đợt này không có mày chạy chán vãi l"]]},
+  {name:"nht_anh",time:"3 ngày",msgs:[["them","anh có người yêu chưa vậyyyy cho em xin một slot hóng nha =))"]]},
+  {name:"sneaker.saigon_auth",time:"3 ngày",msgs:[["them","dạ mẫu giày chạy bộ đợt trước anh hỏi bên em vừa restock size 43 rồi ạ!"]]},
+  {name:"xuka._123",time:"4 ngày",msgs:[["them","rep ib em đi mà idol điền kinh ơi 😭"]]},
+  {name:"hieu.dang_minh",time:"5 ngày",msgs:[["them","vãi l dạo này làm trai ngoan hay gì mà up story chill thế =))"]]},
+  {name:"minhminh_sg",time:"6 ngày",msgs:[["them","Đã trả lời tin của bạn: dạo này không thấy anh đi giải nữa buồn ngang"]]},
+  {name:"phong.pt_fitness",time:"1 tuần",msgs:[["them","đợt này body hơi sụt cân hả em trai, cần giáo án lên cơ tại nhà thì hú anh"]]},
+  {name:"lenhubinh_alicia",time:"1 tuần",msgs:[["them","nhắn k rep luôn chảnh ghê"]]},
+  {name:"ntrang288",time:"2 tuần",msgs:[["them","góc nghiêng j mà bén wa dị chờiiii"]]}
+];
+const ZALO=[  // cùng cách viết như SMS. Thêm avatar:"photos/xxx.jpg" vào từng người để đổi ảnh đại diện
+  {name:"Anh Hai",avatar:"photos/ahai.jpg",time:"Bây giờ",msgs:[["them","Đang đâu v","00:15"],["them","Đi chơi với ny ah","00:15"],["them","Về lẹ đi mẹ làm um sùm ở nhà rồi kìa","00:15"]]},
+  {name:"Em Huy",avatar:"photos/sohee.jpg",pin:1,time:"19:06",msgs:zc(`
+    # 20/08
+    17:45 > hi
+          > bạn ơi
+    18:18 > h (zl/nung.png)
+          > k rep luôn?
+          > chảnh thế
+          < Ai. VẬY ạ?
+    18:19 > h (zl/khoc.png)
+          > tht luôn……….?
+          > anh là người mua cho em điện thoại nhắn tin đó
+          > xuân huy
+          > mới đây mà
+          > sao e quên nhanh v TT
+    18:22 < Zạ em nhó ròi. Em chx queng.sài Cảm ứng a ơi
+          < nảy e ấn lộn Nút.
+    18:23 > =))))))
+          > từ từ rồi quen
+          > mà lưu số anh đi
+          < Lưu là. GÌ anh ?
+          > Anh Bình (binnie)
+    18:24 < binie La gi ?
+          > k là gì hết
+          > nhưng mà nghe nó quốc tế
+    18:30 < Vưn
+          < e luu ròi. Cảm on a binhie nha.
+          < tiềng cai đien thoai e sẽ ráng Làm gòi chả lại a
+          > anh đã bảo là cho, không cần trả
+          > tiền tiết kiệm của anh
+          > hồi còn ở thành phố a có tham gia chạy điền kinh
+          > anh k thiếu đâu
+    18:56 > anh không tiếc gì với em hết
+    # 24/08
+    21:10 > h (zl/chan_doi.png)
+          > trường dưới này chán tht
+          > anh ỷ y giáo trình dưới quê dễ
+          > nay làm bài kiểm tra toán không được.
+    21:30 < s vạy a
+          < a hc dở Hã
+    21:31 > ý em là sao =)))
+          > anh học không tệ đâu huy ơi
+          > do anh lười thôi
+    21:35 < zạ v Bửa xau a ráng hc xíu xíu dể điẻm Kao nha. bame a xẻ vui Vui
+          < em củng mún hc nửa ma nghĩ hc luông roi :(
+    21:37 > um
+          > k bao giờ là muộn để học đâu mà
+          > k có con đường này thì có con đường khác
+    21:45 < Vơn
+          < e Mói tắm
+          < bùn ngũ qa.Hôm nay mệt lấm A
+          > vậy đi ngủ sớm đi em
+    # 12/09
+    12:15 > ngoài trời đang nắng lắm. em có ra ngoài ruộng không đó?
+    13:00 < Nảy thì Có. A
+          < Nắng ngắt lun a ơi
+          < giờ đỡ roi
+          < h (zl/que.png)
+    13:02 > nắng gắt chứ không phải ngắt
+          > đỡ r thì cũng phải đội nón vào
+          > k lại say nắng
+    13:10 < chước Giờ e dẩn vạy ma =))
+          < bame e sấp xĩu roi, e phai phụ
+          < Nên em wen rui
+    13:12 > đừng ỷ y
+          > chiều nay a ghé
+          > tụi mình đi ăn kem nha
+    13:15 < Vưn
+          < h (zl/chodien.png)
+          < A binhie tôt qua ! Cảm ơn a
+          > cái đó k phải sticker cảm ơn đâu huy
+    # 05/10
+    22:00 > huy
+          > ngủ chưa
+    22:30 > h (zl/nhin.png)
+          > nay ngủ sớm hả
+    # 06/10
+    05:30 < Oi chet
+          < hom wa em cầm dthoai cai ngủ queng
+          < rớt xuống mặt sưng cái mỏ lun
+          < Sín lỏi a bìnhue
+          < h (zl/sungmoi.png)
+    06:15 > =))))))))))
+          > kẹp tóc a mua đó hả
+          > tóc phai màu rùi kia, muốn nhuộm lại khom
+          > với lại sao xin lỗi mà mặt mày nhăn nhó thé
+          > tht sự luôn í
+          > có đau lắm k
+    06:20 < Gân hết. Roi a
+    06:22 > mà chiều hôm qua lúc anh đạp xe ngang khúc rẽ vào xóm
+          > anh có gọi e mà e k trả lời
+          > k nghe hả
+          > lúc đó vác cái gì mà nặng thế?
+    06:35 < ak
+          < bao lúa nhà cô bẫy, ng ta Nhờ e vát dùm
+    06:37 > huy nghe a nói nè
+          > sau này có việc gì nặng mà làm không nổi thì gọi điện cho anh
+          > nhớ nhé
+    06:40 < Nhưng mà Lở
+          < lúc đó A đang hoc?
+    06:42 > a cúp luôn
+          > huy quan trọng hơn
+          > hiểu không?
+          > không thì  anh lấy lại điện thoại bây giờ
+    06:45 < ơ zạ zạ e xợ òi
+          < a bình đưng lấy lại Đth nhe
+          < Ko co Đth e Ko chơi Robloc đươc
+    # 28/10
+    22:45 < h (zl/bruise.png)
+          < nay xui gê a Bìn, e trựt chưng té xuong vũng xình
+          < Đao
+    22:46 > ???
+          > ngã lúc nào?
+          > đi đứng kiểu gì mà trượt vậy?
+    22:50 < A Bìnie la e hã :(
+    22:51 > anh không có la
+          > anh lo quá nên nhắn hơi cọc
+          > rồi bôi thuốc gì chưa? có bị rát không?
+    22:55 < chắt Hok s đâu a.
+          < e rưa nuóc. là xong hà
+    22:56 > rửa nước không ăn thua đâu
+          > đợi a qua
+    22:58 < Thui A ! tốii thui rùi mak ra ji Nữa a oi bị bame la á
+    23:00 > anh ra tới ngõ nhà em luôn r
+          > ráng đi bộ ra ngoài này dc k
+          > nha
+          > ráng tí
+          > anh có mua mì trộn cho em luôn nè
+    # 02/11
+    15:15 < A Binhie oi
+          < Lam sao để toc bớt Rụng hả a
+    15:17 > rụng hả
+          > rụng nhiều lắm k?
+          > để nay a cúp tiết cuối
+    15:25 < Ua liên qan gì A?
+    17:02 > h (zl/dye.png)
+          > a mới chạy ra trung tâm mua dầu dưỡng với thuốc nhuộm
+          > g a qua nhà huy nhé, tầm 15p nữa
+          > mình nhuộm đen lại nha e
+          > chứ để vàng chóe như thế mà k chăm
+          > sau này e hói là cái chắc
+    17:05 < Anh…….mắn e………..
+          < h (zl/chodien.png)
+    17:06 > nữa r đó
+    17:06 < NhMa e k Nhuôm tóc đen đâuuuuuuuuuuuuuuuuuu
+    # 04/11
+    16:30 > a tan học r
+          > a qua nha
+          < Vưn
+    # 07/11
+    16:30 > g a qua nha
+          < Vưn
+    # 08/11
+    16:30 > mình đi ăn gì đó k
+          < bánh bao Dc khong A ?
+          > 2p nữa có mặt
+    # 11/11
+    16:45 > nay a bị giữ lại
+          > tại có bài kiểm tra
+          > g a qua
+          < Vưn
+    # 13/11
+    21:55 > gọi điện k
+          < Mìk vưa mới gặp nhâu mà A =))))
+          > nhớ e huy
+          > k được sao?
+          > h (zl/call1.png)
+    # 15/11
+    03:16 < A Bình
+          < anh Ngủ. chua
+          < E muốn nói chuyên
+    03:18 > h (zl/call2.png)
+    # 16/11
+    20:30 > tuần này a thi giữa kì
+          > chúc a may mắn đi
+          < h (zl/phun.png)
+          > ?
+          < Nươc miếng của e Huy là nước miếng thần Thánh
+          < đem Lại sự may mắn
+          > em ơi là em
+    # 19/11
+    20:11 > huy
+          > tắm rửa ăn uống gì chưa
+    20:12 < Mới về a ơi
+    20:13 > giỏi ta
+          > nay nhắn k sai chữ nào luôn
+    20:14 < NgTa tiến bộ R.
+          > =)))
+          > thế người tiến bộ biết nay là ngày gì k
+    20:15 < Ngày Hoa hồng tăng giá
+          > ?????
+    20:16 < Tại mai 20/11
+          < Ngày Nhà giáo VN
+    20:17 > a nể e tht chứ
+          > =))) huy ơi là huy
+    20:18 < Giỡn đâu tr
+          < chứ Nay ngày j ?
+          > quốc tế đàn ông
+          < Ui e ko Biết
+          < E ch chuẩn bị qà.....
+          > k sao a cũng mới nhớ =)))
+          < Hù e ko à huhu
+          < Sợ A giựn e
+          > thui đừng khóc a xót
+          > a k giận
+          > nên là ngày mai mình đi chơi bù nha
+          < Sao ko phải ngày mốt.......
+          > a thích mai cơ, thích ngày 20/11 cơ
+          < Phải thích ngày 21 Cơ!!!
+          < h (zl/nung.png)
+          < mà A bit ngày đó là Ngày j ko mà Nóy
+          > uk a ko biết
+          > vậy thui mình khỏi đi hén
+          < ANHHHHHHHHHHHHHHHH
+          < 21 SIN NHẬT EEEEEEEEEMMMMMM
+    20:20 < Em muốn đi chơi với A Binnie
+    20:20 > giỏi
+          < hứ
+    20:20 > GIỎI
+          > GIỎI KINH KHỦNG
+          > GIỎI VƯỢT SỨC TƯỞNG TƯỢNG
+          > G
+          > I
+          > Ỏ
+          > I
+          > LÊ XUÂN HUY!
+          > GIỎI
+          > CỰC KÌ GIỎI
+    20:20 < Thôi đươc rồi a ơi
+          < làm cái Trò gì mà như Mấy đứa con nít
+          > ?????????
+          > giỡn e chứ mình đi cả 2 ngày cũng được mà
+          > a muốn đi chơi tối 20
+          > đi tới nửa đêm luôn
+          < Bame chửi E chớt a
+          > uh ba mẹ a chắc chắn cũng sẽ chửi a
+          < OK v chơi Luôn!!!
+          < Mà xeo bắt buộc Phải là 20....
+          < Còn đi tới khuya nửa
+          > tại a muốn là ng đầu tiên nói chúc mừng sinh nhật em
+          < h (zl/chodien.png)
+    22:41 < h (zl/call3.png)
+    22:43 > vậy chốt nhé
+          > mai a qua đón e
+          > mình lên trung tâm đi chơi nhé
+          > 7h tối mai
+          < Vưn
+    # 20/11
+    19:06 < A đợi e xí e chưa lựa được đồ mặc
+          > =)))) ừ a đợi
+  `)},
+  {name:"Mẹ",avatar:"photos/me.jpg",time:"18:00 chiều",unread:1,msgs:[...zc(`
+    # 15/06
+    20:10 > mẹ.
+          > con xin ở lại nhà dì út học hết 12 được k mẹ?
+          < Không được đâu con. Dì út còn phải lo cho hai em nhỏ, con ở đó bề bộn lắm.
+          > con tự lo được, con không phiền dì đâu
+    # 10/07
+    19:30 > mẹ ơi
+          > con ra ngoài thuê trọ ở nhé
+          > tiền tiết kiệm con có
+          < Bình, ba mẹ đã quyết rồi. Năm nay năm cuối cấp, ba mẹ không thể để con ở thành phố một mình không ai quản được.
+          < Dưới quê không tệ như con nghĩ đâu. Nghe lời ba mẹ đi con.
+          > dạ
+    # 05/08
+    21:00 > muỗi nhiều quá mẹ
+          > ngoài đường cũng tối thui
+          < Mẹ mua nhang muỗi để trong tủ phòng con rồi đó. Ráng quen vài bữa nha con trai, mai mốt có bạn mới là vui liền à.
+          > chắc không có đâu
+          > con ngủ đây
+    # 15/10
+    12:00 < Bình nay đi học về ăn cơm chưa con? Dạo này quen trường quen lớp chưa?
+          > con ăn rồi
+          > cũng ổn mẹ
+    # 20/11
+    17:30 < Tối nay ba mẹ bận việc ở xưởng về trễ, con tự hâm đồ ăn nhé.
+          > mẹ không cần phần cơm đâu
+  `),["me","tối nay con đi chơi với bạn","18:00"],["them","Khi nào về?","18:07"],["me","trước 12h","18:12"],["them","Trễ quá","18:13"],["me","vậy 11h99","18:13"]]},
+  {name:"Ba",avatar:"photos/ba.jpg",time:"Tuần trước",unread:1,msgs:[...zc(`
+    # 25/06
+    18:45 > ba
+          > việc công ty của ba không còn cách nào khác ạ?
+          > con đang ở trong đội tuyển điền kinh của trường, chuyển đi bây giờ dang dở lắm ba
+          < Công việc của ba mẹ không dời được. Giấy tờ chuyển trường ba lo xong hết rồi.
+          < Đam mê thì ở đâu chạy cũng được. Là đàn ông con trai thì tập thích nghi đi con.
+          > dạ
+    # 05/08
+    09:00 > h (photos/cn.png)
+          > con đóng xong đồ của phòng con rồi
+          < Tốt. Bê ra trước sân đi, chiều xe tải tới bốc.
+          > dạ
+    # 24/08
+    22:15 < Nay đi học thế nào? Nghe nói có bài kiểm tra xếp lớp môn Toán?
+          > con được 5
+          < Sao lại 5? Kiến thức dưới này ba tưởng nhẹ hơn trên thành phố?
+          > con chủ quan
+          > con xin lỗi, lần sau con rút kinh nghiệm
+          < Ừ. Đừng để ba mẹ thất vọng.
+    # 02/11
+    20:00 < Cuối tuần này nghỉ, ba định chở con lên trung tâm mua ít đồ thể thao mới. Mấy đôi giày chạy của con mòn gót hết rồi.
+          > cuối tuần này con bận rồi ba
+          < Bận gì? Dưới này quen ai đâu mà bận?
+          > giày con vẫn chạy được, khi nào rảnh con tự đi mua sau
+          < Ừ, tuỳ con.
+  `),["them","Gửi bảng điểm cho ba xem","11:02"]]},
+  {name:"GROUP LỚP 12A",avText:"12A",on:1,msgs:zc(`
+    # 23/08
+    19:00 < Lớp trưởng | @all Chào mừng thành viên mới của lớp mình nha! Bình ơi ông hello với mọi người đi nè 🥳
+          < Bé Ngọc (lớp phó) | hi Bình nha ^^ mai đi học ông ngồi bàn số 4 dãy trong cùng nhé, có gì không hiểu cứ hỏi tui nha.
+          > chào mn
+          > cảm ơn ngọc
+    # 10/09
+    15:30 < Lớp trưởng | @all Tuần sau trường tổ chức thi làm lồng đèn trung thu, chiều mai tan học mấy bạn trai ở lại chẻ tre với làm khung giúp mấy bạn nữ nha!
+          < Nam | okeeee
+          > mai tui bận rồi
+          > lớp thu quỹ làm lồng đèn bao nhiêu thì nhắn để tui ck cho
+          < Lớp trưởng | ơ thui k sao đâu, ông bận thì thui nha, tiền bạc quỹ lớp lo đủ rồi nèee
+          > v mấy b uống gì để tui mua cho
+          < Nga | ơ tuyệt thếeeee
+          < Thủy | ok v tụi tui đặt r gửi bill cho bình nha
+          < Nam | yeahhh
+          > ok
+    # 05/10
+    20:00 < Nam | ê @Quan Binh, tui nghe thầy Tuân nói ông hồi xưa trong đội tuyển điền kinh SG hả?
+          < Nam | tháng sau trường có hội khoẻ phù đổng, ông đăng ký chạy 100m với 400m gánh team lớp mình điii
+          < Bé Ngọc (lớp phó) | ok á ông thi đi lớp mình ra sân cổ vũ hết mình luôn!!!
+          > tui k đăng ký đâu
+          < Nam | ủa sao v? lấy giải là có điểm cộng môn chủ nhiệm đó
+          > tui nghỉ chạy r
+          > mn tìm bạn khác giúp tui nhe
+          < Nam | chán thế
+          < Nam | th tùy ông
+    # 18/11
+    19:00 < Lớp trưởng | @all Chốt lại là sáng 20/11 lớp mình đi thăm thầy chủ nhiệm, tới trưa thì ghé quán cô tư ăn lẩu nha mọi người ơi!!!
+          < Lớp trưởng | ai đi nhắn riêng cho tui để tui chốt số lượng đặt bàn nhe.
+  `)},
+  {name:"Hương",msgs:zc(`
+    # 14/10
+    20:00 < bình ơi, ông làm bài 4 đề cương toán thầy giao chiều nay chưaaaa
+          < tui giải kiểu j mà nó cứ ra số âm á 🥲 ông chỉ tui được hăm…
+          > x = 15
+          > áp dụng công thức trang 42 r thế số vào
+          < à ok hiểu rồi
+          < then kiu bình nhaaa
+          < mà bình học toán giỏi tht á
+          < v mà bữa điểm kém.... chắc do xui thoy hen huhu
+          > do tui lười đọc đề th
+          < hihi
+          <mai mốt có bài nào hăm hiểu tui hỏi bình tiếp nhaaaa
+    # 20/10
+    19:08 < bình ơi
+  `)},
+  {name:"Khang",msgs:zc(`
+    # 15/08
+    19:00 > khang ơi t hỏi tí
+          < j á?
+          > h (alb/id.png)
+          > m biết ai k
+          > t thấy hay đi long nhong ngoài ruộng
+          > t nhặt được ảnh thẻ của b đó, tính kiếm trả lại
+          < à dm thg này t biết =))) quen mặt vãi =)))
+          < m kcan trả nó đâu
+          < cái ảnh thẻ cũ rích từ đời nào r
+          < g nó k có đi học nên chắc cx k cần ảnh thẻ đâu
+          > sao k đi học?
+          < ba má nó làm nông
+          < nhma tự nhiên đùng 1 cái bị bệnh hết cả 2
+          < nên nó ph nghỉ học từ sớm để phụ gia đình
+          < t cũng chỉ nghe đồn th
+          < mà sáng nào t đạp xe ngang chả thấy nó lội bùn ngoài ruộng
+          < m cứ vứt cái ảnh đi, nó k thiết đâu
+          > tao lỡ cầm rồi
+          > kệ đi
+          > nó tên gì?
+          < lê xuân huy
+          < ở cái xóm nhỏ cách nhà mày có một đoạn cua thôi á
+          > tks
+  `)},
+  {name:"Thầy Tuấn",msgs:zc(`
+    # 20/08
+    21:30 < Bình ơi, thầy gửi danh sách lớp năm nay với sơ đồ chỗ ngồi, em lưu lại nhé. Mới về trường có gì không quen cứ nhắn thầy.
+          > dạ em cảm ơn thầy
+          < Em có muốn tham gia đội tuyển điền kinh của huyện không? Thầy thấy học bạ em có thành tích tốt trên thành phố.
+          > dạ em xin phép không tham gia ạ
+          > năm nay cuối cấp, em muốn tập trung việc khác
+          < Ừ, tuỳ em. Cố gắng học nhé.
+          > dạ thầy
+  `)}
+];
+/* ---- Danh sách Zalo: ghim (pin:1) + xếp theo thời gian + avatar chữ cái ---- */
+const ZCOL=["#3b8cff","#ff8a3d","#2fbf71","#9b6bff","#ff5c7a","#e3a008","#13a8a8"];
+const zav=c=>{if(c.avatar)return av(c.avatar);const t=c.avText||[...c.name.trim()][0].toUpperCase();let h=0;for(const ch of c.name)h=(h*31+ch.charCodeAt(0))%ZCOL.length;
+  return `<div class="pa" style="background:${c.avBg||ZCOL[h]};color:#fff;font-weight:600;font-size:${t.length>2?19:26}px">${t}</div>`};
+/* thời điểm tin cuối: lấy từ các dòng "# dd/mm"; chat không ghi ngày = bây giờ (NOW) */
+const zts=c=>{let dt=null,last=null;for(const m of c.msgs){if(m[0]==="day"){const x=String(m[1]).match(/(\d+)\/(\d+)/);if(x)dt=[+x[2],+x[1]];continue}
+    if(dt&&m[2]){const t=String(m[2]).split(":");last=new Date(NOW.y,dt[0]-1,dt[1],+t[0],+t[1])}}
+  return last||new Date(NOW.y,NOW.m-1,NOW.d,...NOW.time.split(":").map(Number))};
+const zorder=()=>ZALO.map((c,i)=>[c,i]).sort((a,b)=>(b[0].pin?1:0)-(a[0].pin?1:0)||zts(b[0])-zts(a[0]));
+const ztime=c=>{const t=zts(c),n=new Date(NOW.y,NOW.m-1,NOW.d),d=Math.round((n-new Date(t.getFullYear(),t.getMonth(),t.getDate()))/864e5),p=x=>String(x).padStart(2,"0");
+  return d<=0?p(t.getHours())+":"+p(t.getMinutes()):d===1?"Hôm qua":d<7?d+" ngày":p(t.getDate())+"/"+p(t.getMonth()+1)};
+const CALLS=[  // mới nhất ở trên cùng. Mỗi dòng: ["tên","Cuộc gọi đến | Cuộc gọi đi | Cuộc gọi nhỡ","ngày/giờ hiển thị"]
+  ["Ba","Cuộc gọi nhỡ","00:07"],["Anh Hai","Cuộc gọi nhỡ","00:05"],["Mẹ","Cuộc gọi nhỡ","00:02"],
+  ["Anh Hai","Cuộc gọi đến","Hôm qua"],
+  ["Em Huy","Cuộc gọi nhỡ","Hôm qua"],
+  ["Em Huy","Cuộc gọi đến","Thứ năm"],["Ba","Cuộc gọi nhỡ","Thứ năm"],
+  ["Em Huy","Cuộc gọi đến","Thứ tư"],
+  ["Em Huy","Cuộc gọi đến","Thứ ba"],["Ba","Cuộc gọi nhỡ","Thứ ba"],
+  ["Em Huy","Cuộc gọi đến","Thứ hai"],["Ba","Cuộc gọi đến","Thứ hai"],
+  ["Em Huy","Cuộc gọi đi","Chủ nhật"],
+  ["Em Huy","Cuộc gọi đi","13/11/26"],
+  ["Mẹ","Cuộc gọi nhỡ","11/11/26"],["Em Huy","Cuộc gọi đi","11/11/26"],["Ba","Cuộc gọi đến","11/11/26"],
+  ["Em Huy","Cuộc gọi đi","10/11/26"],
+  ["Em Huy","Cuộc gọi đến","09/11/26"],
+  ["Em Huy","Cuộc gọi đi","08/11/26"],
+  ["Em Huy","Cuộc gọi đến","07/11/26"],
+  ["Em Huy","Cuộc gọi nhỡ","06/11/26"],
+  ["Em Huy","Cuộc gọi đến","05/11/26"],
+  ["Em Huy","Cuộc gọi đi","04/11/26"],
+  ["Mẹ","Cuộc gọi đến","03/11/26"],["Em Huy","Cuộc gọi đến","03/11/26"],
+  ["Em Huy","Cuộc gọi đến","02/11/26"],["Mẹ","Cuộc gọi đến","02/11/26"],
+  ["Ba","Cuộc gọi đến","30/10/26"],["Em Huy","Cuộc gọi đi","30/10/26"],
+  ["Em Huy","Cuộc gọi nhỡ","28/10/26"],["Mẹ","Cuộc gọi nhỡ","28/10/26"],
+  ["Em Huy","Cuộc gọi đến","27/10/26"],
+  ["Em Huy","Cuộc gọi đi","26/10/26"],
+  ["Em Huy","Cuộc gọi đi","24/10/26"],
+  ["Em Huy","Cuộc gọi đến","23/10/26"],
+  ["Em Huy","Cuộc gọi đến","22/10/26"],
+  ["Em Huy","Cuộc gọi đến","20/10/26"],
+  ["Em Huy","Cuộc gọi đến","19/10/26"],
+  ["Em Huy","Cuộc gọi nhỡ","18/10/26"],
+  ["Em Huy","Cuộc gọi đến","17/10/26"],
+  ["Em Huy","Cuộc gọi nhỡ","16/10/26"],
+  ["Em Huy","Cuộc gọi đến","15/10/26"],["Mẹ","Cuộc gọi nhỡ","15/10/26"],
+  ["Em Huy","Cuộc gọi đến","12/10/26"],
+  ["Mẹ","Cuộc gọi đi","11/10/26"],
+  ["Em Huy","Cuộc gọi đến","10/10/26"],
+  ["Em Huy","Cuộc gọi đi","05/10/26"],
+  ["Em Huy","Cuộc gọi đến","04/10/26"],
+  ["Em Huy","Cuộc gọi đến","03/10/26"],
+  ["Em Huy","Cuộc gọi đến","29/09/26"],
+  ["Em Huy","Cuộc gọi đến","28/09/26"],
+  ["Em Huy","Cuộc gọi đến","27/09/26"],
+  ["Em Huy","Cuộc gọi đến","26/09/26"],
+  ["Mẹ","Cuộc gọi nhỡ","25/09/26"],
+  ["Em Huy","Cuộc gọi nhỡ","24/09/26"],
+  ["Ba","Cuộc gọi đến","23/09/26"],
+  ["Anh Hai","Cuộc gọi đến","22/09/26"],
+  ["Anh Hai","Cuộc gọi đi","21/09/26"],
+  ["Mẹ","Cuộc gọi đi","20/09/26"],
+  ["Ba","Cuộc gọi đi","16/09/26"],
+  ["Ba","Cuộc gọi đến","13/09/26"],
+  ["Em Huy","Cuộc gọi nhỡ","12/09/26"],["Mẹ","Cuộc gọi nhỡ","12/09/26"],
+  ["Mẹ","Cuộc gọi nhỡ","11/09/26"],
+  ["Mẹ","Cuộc gọi đến","09/09/26"],
+  ["Mẹ","Cuộc gọi đến","08/09/26"],
+  ["Em Huy","Cuộc gọi đến","07/09/26"],
+  ["Ba","Cuộc gọi đến","05/09/26"],
+  ["Mẹ","Cuộc gọi đến","31/08/26"],
+  ["Ba","Cuộc gọi đến","29/08/26"],
+  ["Em Huy","Cuộc gọi đến","28/08/26"],
+  ["Anh Hai","Cuộc gọi đến","22/08/26"],["Ba","Cuộc gọi đi","22/08/26"]
+];
+
+// 3) GHI CHÚ. g = nhóm (Hôm nay/Hôm qua...), t = tiêu đề, d = giờ ngày, x = nội dung (dùng \n để xuống dòng)
+const NOTES=[
+  {g:"Hôm nay",t:"jkdlsajflksa",d:"1 phút trước",x:"lo lawngs quas cht mẹ r"},
+  {g:"1 tuần trước",t:"Kế hoạch hẹn hò",d:"15/11",x:"KHÔNG NGHĨ RA ĐƯỢC CÁI MẸ GÌ HẾT AAAAAAAAAAAAAAAAAA"},
+  {g:"1 tuần trước",t:"Xuân huy thích",d:"14/11",x:"1. mỳ ly\n2. ngủ\n3. hát\n4. tôi (ước j)"},
+  {g:"1 tháng trước",t:"Xuân Huy trầy chân",d:"28/10",x:"tiền bông băng: 100k, vết thương k quá to"},
+  {g:"2 tháng trước",t:"dfajkfjdaskl",d:"30/9",x:"vid xuân huy hát viral......huy nổi tiếng r k biết có bỏ mình k........"},
+  {g:"2 tháng trước",t:"Xuân huy hát",d:"12/9",x:"xuân huy mới tạo acc tiktok để up vid hát, @xuanhuy2111"},
+  {g:"2 tháng trước",t:"sdfhadfjsakl",d:"01/09",x:"dạo này xuân huy thích nghe nhạc nước ngoài và hát theo"},
+  {g:"3 tháng trước",t:"Note chi tiêu",d:"20/08",x:"tiền mua điện thoại và lắp sim cho huy: 11tr"},
+  {g:"3 tháng trước",t:"Lê Xuân Huy",d:"15/08",x:"nhà ở XX/YY, gia đình có truyền thống làm ruộng và bán trái cây theo mùa"}
+];
+// 3b) GHI ÂM: ["tên", "ngày", "thời lượng", "file âm thanh"]. Bấm vào bản ghi để mở trình nghe. Ví dụ ["Xuân Huy hát","Hôm qua","1:20","records/huy.mp3"]
+const RECS=[["Tập dợt tỏ tình","Hôm qua","9:46",""],["Xuân Huy hát","Hôm qua","21:11","music/cover.mp3"]];
+
+// 4) ẢNH (album theo tháng). CHỈ CẦN SỬA KHỐI CHỮ ALBUM_TEXT bên dưới: mỗi dòng = 1 tháng, dạng   năm-tháng: ảnh1, ảnh2, ...
+//    - Chỉ ghi TÊN FILE. Ảnh được lấy trong thư mục ALBUM_DIR (muốn ảnh nằm cạnh file html thì đặt ALBUM_DIR="").
+//      Ảnh ở thư mục khác thì ghi cả đường dẫn (có dấu /), ví dụ  photos2/a.jpg
+//    - Một con số = bấy nhiêu ô màu mẫu.  Trộn được:   2026-08: 3, a.jpg, b.jpg   (3 ô mẫu rồi 2 ảnh thật)
+//    - Thêm/xóa dòng tùy ý, thứ tự dòng không quan trọng. Không cần dấu nháy, không cần ngoặc.
+const ALBUM_DIR="ALBUM_DIR/";
+const ALBUM_TEXT=`
+2026-08: wonbinnghieng.png, ig2.jpg, wonbinhn.png, day1.jpg, t81.jpg, ig1.jpg, id.png,
+2026-09: chin1.png, hoc6.png, hoc7.png, 1day.jpg, view1.jpg, gym.jpg, view2.jpg, photos/wonbinhinhnen.jpg
+2026-10: hoc3.png, hoc4.png, an.jpg, view4.jpg, te.jpg, chup3.png, hoc8.png, chup2.jpg, hoc9.png, dichoi2.jpg, sel.jpg, shan.png
+2026-11: hoc2.png, muoimot1.png, muoimot2.png, muoimot3.png, callmot1.png, callmot2.png, callmot3.png, hoc5.png, muoimot4.png, muoimot5.png, hoc1.png, callba1.png, callba2.png, muoimot6.png, callhai1.png, callhai2.png, callhai3.png, now1.png, now2.png
+`;
+const ALBUM=ALBUM_TEXT.trim().split("\n").map(l=>l.trim()).filter(l=>l&&l.includes(":")).map(l=>{const i=l.indexOf(":");
+  return[l.slice(0,i).trim(),l.slice(i+1).split(",").map(x=>x.trim()).filter(Boolean).flatMap(x=>/^\d+$/.test(x)?Array(+x).fill(""):[x.includes("/")?x:ALBUM_DIR+x])]});
+const PHOTO_NEWEST_BOTTOM=true;  // true = tháng mới nhất nằm dưới cùng và mở ra là thấy ngay (giống iPhone thật); false = tháng mới nhất nằm trên cùng
+
+// 5) NHẠC (app Nhạc): ["Tên bài","Ca sĩ","ảnh bìa (có thể để trống)"]
+const SONGS=[["Track 6","Tyronee","music/track6.png","music/track6.mp3"],["Nằm Bên Anh","Minh Đinh, Hà An Huy","music/nba.jpg","music/nba.mp3"],["Từ Khi Thấy Em","boum","music/boum.jpg","music/boum.mp3"],["MOT NGUOI VI EM","WEAN","music/wean.jpg","music/wean.mp3"],["Tối Nay Ta Đi Đâu Nhờ","RPT MCK","music/mck.jpg","music/mck.mp3"]];
+
+// 6) GOOGLE: lịch sử tìm kiếm
+const SEARCHES=["cần phải chuẩn bị gì khi tỏ tình","những câu tán tỉnh thả là dính ngay","quà sinh nhật cho con trai","cách đắp màu thuốc nhuộm vàng sao cho đỡ hư tổn nhất","thôi dẹp đi","cách năn nỉ người nhỏ hơn một tuổi","cách thuyết phục người sắp bị hói nhuộm lại tóc đen","shop bán thuốc nhuộm đen","bisexual là gì","đồng tính nhưng đôi khi vẫn thích con gái","đàn ông thấy đàn ông khác dễ thương","lê xuân huy","xuân huy","huy","có thể tìm thông tin của một người lạ mặt chỉ bằng ảnh thẻ chân dung 3x4 ko","cách hòa nhập với trường mới","địa điểm vui chơi ở quê","cách năn nỉ ba mẹ hiệu quả","nhà trọ tphcm","làm sao để thuyết phục phụ huynh cho ở một mình","chuyển trường vì công việc của gia đình"];
+
+// 7) YOUTUBE (màn hình Shorts / kết quả tìm kiếm). SỬA MỌI THỨ Ở ĐÂY:
+//    q     = chữ trong ô tìm kiếm
+//    chips = các nút lọc phía trên (nút đầu tiên được tô trắng)
+//    me    = ảnh của nút "Trang của tôi" ở góc dưới bên phải (để "photos/avt.jpg" = hình tròn đen)
+//    videos = danh sách video, thêm/xóa bao nhiêu dòng tùy ý (2 video / hàng). Mỗi dòng:
+//             [ "ảnh bìa", "tiêu đề", "tên kênh", "lượt xem · thời gian", "ảnh kênh" ]
+//             ảnh bìa để "" = ô màu mẫu có in tiêu đề;  ảnh kênh để "" = hình tròn màu mẫu
+//             ví dụ: ["yt/1.jpg","Hát cover rất hay","xuanhuy","12 N lượt xem · 2 ngày trước","photos/sohee.jpg"]
+const YT={q:"đệm đàn guitar cho người hát",chips:["toàn bộ","Short","Chưa xem","Video"],me:"",videos:[
+  ["photos/ytb2.jpg","Hướng dẫn: Rải ballad cơ bản","antinitonny","2 triệu lượt xem · 2 tuần trước","photos/ytbavt.jpg"],
+  ["photos/ytb3.jpg","Luyện ngón guitar trước khi tập","antinitonny","1 triệu lượt xem · 1 tháng trước","photos/ytbavt.jpg"],
+  ["photos/dongian.jpg","Nhớ tên 6 dây đàn guitar","antinitonny","213 N lượt xem · 3 tháng trước","photos/ytbavt.jpg"],
+  ["photos/tan.jpg","Cách tán gái thông qua chơi guitar (tán trai cx dc)","antinitonny","3,1 triệu lượt xem · 1 năm trước","photos/ytbavt.jpg"]
+]};
+
+// 8) TIKTOK. Màn hình đầu (1 bài, không cuộn). src = video "videos/a.mp4" HOẶC img = ảnh "tiktok/a.jpg" (để trống cả hai = nền màu mẫu)
+//    avatar = ảnh đại diện NGƯỜI ĐĂNG (hình tròn bên phải);  repostAvatar = ảnh đại diện NGƯỜI REPOST (hình nhỏ cạnh chữ "... reposted", để trống = dùng ME.avatar)
+//    followed:true = tài khoản của bạn đã follow người đăng -> ẩn dấu + ở avatar và ẩn nút Follow ở trang cá nhân của họ (false = hiện lại)
+//    cap: dòng 1 và dòng 2 cách nhau bằng \n. Vuốt sang TRÁI = xem trang cá nhân người đăng (phần từ following... trở xuống).
+const TIKTOK={src:"music/tiktoksh.mp4",img:"",avatar:"photos/sohee.jpg",repostAvatar:"photos/avt.jpg",followed:true,user:"xuanhuy",repost:"Quan Binh",cap:"xuan huy\nTâp Hát nhạc nươc Ngoài.",song:"Âm thanh gôc - xuanhuy",
+ likes:"11.4K",cmts:"26",saves:"658",shares:"1,105",search:"xuanhuy mặc pinky",
+ prof:{name:"xuanhuy",user:"xuanhuy2111",avatar:"photos/sohee.jpg",bio:"Hát.",following:"1",followers:"2,567",total:"84.4K",
+  highlights:[["♥","photos/hl.png"]],   // mỗi highlight: ["tên","ảnh trong hình tròn"] (tên có thể là icon ♥ / ❤️); chỉ ghi chữ "Tên" thì hình tròn để trống
+  posts:[["photos/sh1.png","82.9K"],["photos/sh2.png","5,639"],["photos/sh3.png","5,868"],["photos/sh4.png","5,613"],["photos/sh5.png","35.6K"],["photos/sh6.png","163.6K"]]}};  // posts: ["ảnh bìa","lượt xem"]
+// TIKTOK của CHÍNH BẠN (bấm tab Profile): posts có thể thêm phần tử thứ 3 là chữ trên ảnh, ví dụ ["","5.7GB","Drafts: 393"]
+const TTME={name:"Quan Binh",user:"qbinnie0203",avatar:"photos/avt.jpg",bio:"yup",following:"33",followers:"1,082",total:"32.4K",
+ posts:[["photos/tiktokdraft.png","5.7GB","Drafts: 393"],["photos/tiktok1.png","42K"],["photos/tiktok2.png","9,093"],["photos/tiktok3.png","62.8K"]]};
+
+// 9) INSTAGRAM: posts = ảnh bài đăng (để trống = "Không có bài đăng nào"), searches = tìm kiếm gần đây
+const IG={posts:["photos/ig1.jpg","photos/ig2.jpg","photos/ig3.jpg"],followers:"1.204",following:"310",searches:["xuanhuyyy","xuanhuy_le","xuanhuy2111"]};
+
+// 10) ỨNG DỤNG trên màn hình
+const APPS=[
+  {n:"Ghi âm",img:"logo/record.jpg",page:"vm"},{n:"Ghi chú",img:"logo/note.png",page:"nt"},
+  {n:"Lịch",c:"#fff",i:`<div style="text-align:center;line-height:1;color:#000"><small style="display:block;color:#ff3b30;font-size:11px;font-weight:600;margin-bottom:1px">${NOW.day}</small><span style="font-size:38px;font-weight:300">${NOW.d}</span></div>`,page:"cal"},
+  {n:"Ảnh",img:"logo/alb.jpg",page:"ph"},{n:"Cài đặt",img:"logo/set.jpg",page:"set"},
+  {n:"Instagram",img:"logo/ig.png",page:"ig"},
+  {n:"YouTube",img:"logo/ytb.png",page:"yt"},{n:"Zalo",img:"logo/zalo.png",page:"zalo"},
+  {n:"TikTok",img:"logo/tiktok.jpg",page:"tt"}
+];
+const DOCK=[
+  {n:"Điện thoại",img:"logo/call.png",page:"pn"},
+  {n:"Tin nhắn",img:"logo/chat.png",page:"sms"},
+  {n:"Nhạc",img:"logo/ms.png",page:"mu"},
+  {n:"Safari",c:"transparent",i:'<svg viewBox="0 0 62 62" width="62" height="62"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4cc0ff"/><stop offset="1" stop-color="#0a5cff"/></linearGradient></defs><rect width="62" height="62" rx="15" fill="url(#sg)"/><circle cx="31" cy="31" r="22" fill="none" stroke="#fff" stroke-width="2"/><path d="M31 9.5v4M31 48.5v4M9.5 31h4M48.5 31h4" stroke="#fff" stroke-width="2"/><path d="M40 22l-6 12-6-6z" fill="#ff3b30"/><path d="M22 40l6-12 6 6z" fill="#fff"/></svg>',page:"gg"}
+];
+/* ====================================== */
+const $=s=>document.querySelector(s),D=new Date(NOW.y,NOW.m-1,NOW.d);
+const days=["Chủ nhật","Thứ hai","Thứ ba","Thứ tư","Thứ năm","Thứ sáu","Thứ bảy"];
+function tick(){document.querySelectorAll(".tm").forEach(e=>e.textContent=NOW.time);
+  $("#date").textContent=NOW.day+", "+NOW.d+" tháng "+NOW.m}
+tick();
+
+$("#notifs").innerHTML=NOTIFS.map(n=>`<div class="n"><div class="av">${n.name.slice(0,3)}<u>${n.ic}</u></div><div class="t"><div class="h">${n.name}<span>${n.time}</span></div><div class="m">${n.text}</div></div></div>`).join("");
+
+const ico=a=>a.img?`<img src="${a.img}" alt="" draggable="false" style="width:100%;height:100%;object-fit:cover;border-radius:15px">`:a.t?`<b style="color:${a.tc||"#fff"};font-size:${a.fs||22}px;font-weight:800;letter-spacing:-1px">${a.t}</b>`:a.i;
+const tile=a=>`<div class="app" data-n="${a.n}"><div class="ic" style="${a.img?"":`background:${a.c}`}">${ico(a)}${a.b?`<span class="bd">${a.b}</span>`:""}</div><span class="lb">${a.n}</span></div>`;
+$("#grid").innerHTML=APPS.map(tile).join("");$("#dock").innerHTML=DOCK.map(tile).join("");
+const ALL=[...APPS,...DOCK];
+
+const LET={1:"",2:"ABC",3:"DEF",4:"GHI",5:"JKL",6:"MNO",7:"PQRS",8:"TUV",9:"WXYZ",0:""};
+let code="";const ph=$("#phone");
+$("#pd").innerHTML="<i></i>".repeat(PASSCODE.length);
+$("#pk").innerHTML=[1,2,3,4,5,6,7,8,9,0].map(n=>`<button class="k${n===0?" z":""}" data-d="${n}"><b>${n}</b><small>${LET[n]}</small></button>`).join("");
+function upd(){[...$("#pd").children].forEach((d,i)=>d.classList.toggle("on",i<code.length));$("#cn").textContent=code.length?"Xóa":"Hủy bỏ"}
+function showPC(){code="";upd();$("#pt").textContent="Nhập mật khẩu";$("#pc").classList.add("show");ph.classList.add("pcm")}
+function hidePC(){$("#pc").classList.remove("show");ph.classList.remove("pcm")}
+function unlock(){hidePC();$("#lock").classList.add("off")}
+function lock(){closeApp();code="";upd();hidePC();$("#lock").classList.remove("off")}
+function press(d){if(code.length>=PASSCODE.length)return;$("#pt").textContent="Nhập mật khẩu";code+=d;upd();if(code.length===PASSCODE.length)setTimeout(check,160)}
+function back(){if(code.length){code=code.slice(0,-1);upd()}else hidePC()}
+function check(){if(code===PASSCODE)return unlock();
+  $("#pd").classList.add("shake");$("#pt").textContent="Sai mật khẩu, thử lại";try{navigator.vibrate&&navigator.vibrate(200)}catch(e){}
+  setTimeout(()=>{$("#pd").classList.remove("shake");code="";upd()},480)}
+$("#pk").addEventListener("click",e=>{const b=e.target.closest(".k");if(b)press(b.dataset.d)});
+$("#cn").onclick=back;$("#em").onclick=()=>{$("#pt").textContent="Gọi khẩn cấp: 113 · 114 · 115"};
+const WPS=[["Đêm","radial-gradient(120% 80% at 50% 0%,#1d1f26,#050506 70%)"],["Hoàng hôn","linear-gradient(160deg,#ff9966,#ff5e62 45%,#4a2c7a)"],["Biển","linear-gradient(170deg,#4facfe,#00c6ff 40%,#0a2a5e)"],["Rừng","linear-gradient(160deg,#a8e063,#2f855a 50%,#0b2e22)"],["Anh đào","linear-gradient(160deg,#ffd1dc,#ff7eb3 50%,#5b2a86)"],["Tím","linear-gradient(160deg,#c084fc,#6366f1 50%,#0f172a)"]];
+const wpv=x=>/^(linear|radial|url)/.test(x)?x:`url("${x}")`;
+function setWP(v,save=true){$("#phone").style.setProperty("--wp",v);if(save){try{localStorage.setItem("wp",v)}catch(e){}}}
+function defWP(){return DEFAULT_WP?wpv(DEFAULT_WP):WPS[0][1]}
+try{setWP(localStorage.getItem("wp")||defWP(),false)}catch(e){setWP(defWP(),false)}
+function fromFile(f){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1000/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);setWP(`url("${c.toDataURL("image/jpeg",.82)}")`)};im.src=r.result};r.readAsDataURL(f)}
+const PER='<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.5"/><path d="M3.5 21c0-5 3.8-7.5 8.5-7.5s8.5 2.5 8.5 7.5z"/></svg>';
+const phg=i=>`linear-gradient(135deg,hsl(${i*53%360} 55% 42%),hsl(${(i*53+50)%360} 55% 22%))`;
+const bg=(s,i)=>`background:${s?`url('${s}') center/cover,`:""}${phg(i)}`;
+const AVT=n=>([...ZALO,...SMS,...IGDM].find(c=>c.name===n)||{}).avatar;
+const av=(img)=>`<div class="pa" style="${img?bg(img,1):""}">${img?"":PER}</div>`;
+const TH={sms:{d:SMS,ac:"#0a84ff",me:"#0a84ff"},zalo:{d:ZALO,ac:"#4da3ff",me:"#0068ff"},ig:{d:IGDM,ac:"#fff",me:"#7a3cff"}};
+const last=c=>c.msgs.length?c.msgs[c.msgs.length-1][1]:"";
+const rows=k=>TH[k].d.map((c,i)=>`<div class="li" ${k==="sms"||(k==="ig"&&!c.open)?'style="cursor:default"':`data-a="th" data-k="${k}" data-i="${i}"`}>${k==="sms"?`<span class="ud" style="opacity:${c.unread?1:0}"></span>`:""}${av(c.avatar)}<div class="tx"><div class="r"><b>${c.name}</b><small>${c.time||""}</small></div><span class="s">${last(c)}</span></div></div>`).join("");
+const thread=(k,i)=>{const c=TH[k].d[i],t=TH[k];let p="";return `<div class="v" style="--me:${t.me}"><div class="hd"><span class="bk" data-a="root" style="color:${t.ac}">‹ Quay lại</span><b>${c.name}</b><span style="width:70px"></span></div><div class="th">${c.msgs.map(m=>{const l=m[2]&&m[2]!==p?`<div class="tm2">${p=m[2]}</div>`:"";return l+`<div class="bb ${m[0]}">${m[1]}</div>`}).join("")}</div><div class="ib">Tin nhắn</div></div>`};
+const tabs=(a,on,ac)=>`<div class="nb">${a.map((t,i)=>`<span style="color:${i===on?ac:"#888"}">${t[0]}<br>${t[1]}</span>`).join("")}</div>`;
+const cov=(s,i)=>`<div class="cv" style="${bg(s[2],i)}"></div>`;
+const songs=(b)=>SONGS.map((s,i)=>`<div class="li">${cov(s,i)}<div class="tx" style="${b}"><div>${s[0]}</div><span class="s">${s[1]}</span></div><span>⋯</span></div>`).join("");
+const albSecs=()=>{let g=0;const L=[...ALBUM].sort((a,b)=>String(a[0]).localeCompare(String(b[0]))).map(([k,v])=>{const [y,m]=String(k).split("-").map(Number);return{label:`tháng ${m} năm ${y}`,items:Array.isArray(v)?v:Array(Math.max(0,v|0)).fill("")}}).filter(x=>x.items.length);
+  if(!PHOTO_NEWEST_BOTTOM)L.reverse();return L.map(x=>(x.start=g,g+=x.items.length,x))};
+const pics=()=>albSecs().flatMap(x=>x.items);
+const igNav=t=>`<div class="nb" style="font-size:22px">${[["🏠","h"],["🎞️","r"],["✈️","d"],["🔍","s"],["","p"]].map(([e,k])=>`<span data-a="igt" data-t="${k}" style="${t===k?"":"opacity:.55"}">${k==="p"?`<span class="pa" style="width:26px;height:26px;display:inline-grid;${ME.avatar?bg(ME.avatar,2):""}"></span>`:e}</span>`).join("")}</div>`;
+const PG={
+ sms:()=>`<div class="v"><div class="hd"><span class="bk">Biên tập</span><span class="bk">✎</span></div><div class="tl">tin nhắn</div><div class="sr">🔍 tìm kiếm</div>${rows("sms")}</div>`,
+ zalo:()=>`<div class="v"><div class="hd" style="background:#0068ff"><span style="flex:1;opacity:.9">🔍 Tìm kiếm</span><span>＋</span></div>${rows("zalo")}${tabs([["💬","Tin nhắn"],["👥","Danh bạ"],["🔷","Khám phá"],["🕘","Nhật ký"],["👤","Cá nhân"]],0,"#4da3ff")}</div>`,
+ ig:()=>{const t=IGT;let b;
+  if(t==="d")b=`<div class="hd"><b style="font-size:20px">${ME.user} ⌄</b><span>✎</span></div><div class="tl" style="font-size:22px">Tin nhắn</div>${rows("ig")}`;
+  else if(t==="s")b=`<div class="hd"><div class="sr" style="flex:1;margin:0">🔍 Tìm kiếm</div></div><div class="gh" style="font-size:16px">Gần đây</div>${IG.searches.map(s=>`<div class="li">${av()}<div class="tx" style="border:0"><b>${s}</b></div><span>✕</span></div>`).join("")}`;
+  else b=`<div class="hd"><span style="font-size:26px">＋</span><b style="font-size:18px">${ME.user} ⌄</b><span style="font-size:22px">☰</span></div><div style="display:flex;gap:20px;align-items:center;padding:6px 18px"><div class="pa" style="width:86px;height:86px;${ME.avatar?bg(ME.avatar,2):""}">${ME.avatar?"":PER}</div><div style="flex:1"><div>${ME.name}</div><div style="display:flex;justify-content:space-between;margin-top:6px">${[[IG.posts.length,"Bài viết"],[IG.followers,"Người theo dõi"],[IG.following,"Đang theo dõi"]].map(x=>`<div><b style="font-size:18px">${x[0]}</b><br><small>${x[1]}</small></div>`).join("")}</div></div></div><div style="display:flex;gap:8px;padding:10px 16px"><div class="bt">Chỉnh sửa hồ sơ</div><div class="bt">Chia sẻ hồ sơ</div></div>${IG.posts.length?`<div class="gr">${IG.posts.map((p,i)=>`<div style="${bg(p,i)}"></div>`).join("")}</div>`:`<div class="em">📷<br><b>Không có bài đăng nào</b></div>`}`;
+  return `<div class="v">${b}${igNav(t)}</div>`},
+ yt:()=>{const m=YT.imgs.length?YT.imgs:Array(6).fill("");return `<div class="v"><div class="hd"><span style="font-size:26px">‹</span><div class="sr" style="flex:1;margin:0;color:#fff;border-radius:20px">${YT.q}<span style="float:right">✕</span></div><span>🎙️</span></div><div class="ch">${["Toàn bộ","Quần short","Không xem","Băng hình"].map((c,i)=>`<span class="${i?"":"on"}">${c}</span>`).join("")}</div><div class="g2">${m.map((s,i)=>`<div style="${bg(s,i+3)}"></div>`).join("")}</div>${tabs([["🏠","trang chủ"],["▶️","Quần short"],["➕",""],["📺","đăng ký"],["👤","Bạn"]],0,"#fff")}</div>`},
+ tt:()=>`<div class="v" style="height:100%;background:#000"><div style="position:absolute;inset:0">${TIKTOK.src?`<video src="${TIKTOK.src}" data-a="mute" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover"></video>`:`<div style="${phg(5)};width:100%;height:100%;display:grid;place-items:center;font-size:64px">▶</div>`}</div><div style="position:absolute;top:58px;width:100%;text-align:center;font-weight:600;text-shadow:0 1px 4px #000">Đang theo dõi &nbsp;|&nbsp; Dành cho bạn</div><div style="position:absolute;right:12px;bottom:130px;text-align:center;font-size:30px;line-height:1.9">♥<br>💬<br>➤</div><div style="position:absolute;left:14px;bottom:96px;right:80px;text-shadow:0 1px 4px #000"><b>${TIKTOK.user}</b><br>${TIKTOK.cap}</div><div style="position:absolute;bottom:0;left:0;right:0">${tabs([["🏠","Trang chủ"],["👥","Bạn bè"],["➕",""],["✉️","Hộp thư"],["👤","Hồ sơ"]],0,"#fff")}</div></div>`,
+ sp:()=>`<div class="v" style="background:linear-gradient(#3b2d8f,#000 280px)"><div class="hd" style="background:none"><span>‹</span></div><div style="padding:36px 16px 6px"><div style="font-size:26px;font-weight:800">Bài hát đã thích</div><div style="color:#bbb;margin-top:6px">${SONGS.length} bài hát</div></div><div style="padding:6px 16px 12px"><span class="pl">▶</span></div>${songs("border:0")}${tabs([["🏠","Trang chủ"],["🔍","Tìm kiếm"],["📚","Thư viện"]],2,"#fff")}</div>`,
+ mu:()=>`<div class="v"><div class="hd"><span style="color:#ff3b55">‹ Thư viện</span></div><div class="tl">hát</div><div class="sr">🔍 tìm kiếm</div><div style="display:flex;gap:10px;padding:8px 16px 12px"><div class="bt" style="color:#ff3b55">▶ Phát</div><div class="bt" style="color:#ff3b55">⇄ Ngẫu nhiên</div></div>${songs("")}${SONGS[0]?`<div class="np">${cov(SONGS[0],0)}<span>${SONGS[0][0]}</span><span style="margin-left:auto">⏸ ⏩</span></div>`:""}${tabs([["🏠","trang chủ"],["▦","Mới"],["📻","radio"],["🎵","Thư viện"],["🔍","tìm kiếm"]],3,"#ff3b55")}</div>`,
+ gg:()=>`<div class="v"><div class="hd"></div><div style="text-align:center;font-size:44px;font-weight:600;padding:20px"><span style="color:#4285f4">G</span><span style="color:#ea4335">o</span><span style="color:#fbbc05">o</span><span style="color:#4285f4">g</span><span style="color:#34a853">l</span><span style="color:#ea4335">e</span></div><div class="sr" style="border-radius:24px;padding:12px 16px">🔍 Tìm kiếm hoặc nhập URL</div><div class="gh" style="font-size:15px;color:#aaa;margin-top:10px">Lịch sử tìm kiếm</div>${SEARCHES.map(q=>`<div class="li"><span style="color:#8e8e93">🕘</span><div class="tx" style="border:0">${q}</div><span style="color:#8e8e93">↖</span></div>`).join("")}</div>`,
+ nt:()=>{let g="";return `<div class="v"><div class="hd"><span class="bk" style="color:#ffb300">‹ thư mục</span><span style="color:#ffb300">⋯</span></div><div class="tl" style="font-size:28px">bản ghi nhớ</div>${NOTES.map((n,i)=>(n.g!==g?(g=n.g,`<div class="gh">${g}</div>`):"")+`<div class="nr" data-a="nt" data-i="${i}"><b>${n.t}</b><br><small>${n.d} &nbsp;${n.x.split("\n")[0]}</small></div>`).join("")}</div>`},
+ ph:()=>`<div class="v"><div class="tl" style="padding-top:62px">Thư viện</div><div style="padding:0 18px 8px;color:#8e8e93">${pics().length} mục</div><div class="gr">${pics().map((s,i)=>`<div data-a="pv" data-i="${i}" style="${bg(s,i)}"></div>`).join("")}</div></div>`,
+ pn:()=>`<div class="v"><div class="tl" style="padding-top:62px">Gần đây</div>${CALLS.map(c=>`<div class="li">${av(AVT(c[0]))}<div class="tx"><div class="r"><b style="${c[1].includes("nhỡ")?"color:#ff453a":""}">${c[0]}</b><small>${c[2]}</small></div><span class="s">${c[1]}</span></div></div>`).join("")}</div>`,
+ vm:()=>`<div class="v"><div class="tl" style="padding-top:62px">Tất cả bản ghi</div><div id="vml">${vmList()}</div></div>`,
+ mp:()=>`<div class="v" style="height:100%;justify-content:center;align-items:center;color:#8e8e93"><div style="font-size:54px">📍</div>Chưa có địa điểm nào gần đây</div>`,
+ cal:()=>`<div class="v" style="padding:80px 20px"><div class="cal"><small>${NOW.day}</small><div>${D.getDate()}</div>Tháng ${D.getMonth()+1}, ${D.getFullYear()}</div></div>`,
+ set:()=>`<div class="v" style="padding:70px 16px"><div class="tl" style="padding-left:0">Cài đặt</div><div class="row"><b>Hình nền</b><div class="sws">${WPS.map((x,j)=>`<span class="sw" data-j="${j}" style="background:${x[1]}" title="${x[0]}"></span>`).join("")}</div><label class="btn">Chọn ảnh từ máy<input type="file" accept="image/*" hidden id="wf"></label><input id="wu" type="text" placeholder="Hoặc dán link ảnh (https://...)"><button class="btn" id="wa">Áp dụng link ảnh</button><button class="btn ghost" id="wr">Khôi phục mặc định</button></div></div>`
+};
+let cur=null,IGT="p";
+function render(){$("#phone").classList.toggle("zl",cur.page==="zalo");$("#phone").classList.toggle("lt",["mu","gg","ph"].includes(cur.page));show(PG[cur.page]());if(cur.page==="ph"&&PHOTO_NEWEST_BOTTOM)toEnd();
+  if(cur.page==="set"){const w=$("#wb");w.querySelectorAll(".sw").forEach(e=>e.onclick=()=>setWP(WPS[e.dataset.j][1]));
+    $("#wf").onchange=e=>e.target.files[0]&&fromFile(e.target.files[0]);
+    $("#wa").onclick=()=>{const v=$("#wu").value.trim().replace(/"/g,"");if(v)setWP(`url("${v}")`)};
+    $("#wr").onclick=()=>{try{localStorage.removeItem("wp")}catch(e){}setWP(defWP(),false)}}}
+function show(h){const w=$("#wb");w.innerHTML=h;w.scrollTop=0}
+const A={root:render,th:d=>show(thread(d.k,+d.i)),igt:d=>{IGT=d.t;render()},
+ nt:d=>{const n=NOTES[d.i];show(`<div class="v"><div class="hd"><span class="bk" data-a="root" style="color:#ffb300">‹ Bản ghi nhớ</span></div><div style="padding:8px 20px"><div style="color:#8e8e93;text-align:center;font-size:12px">${n.d}</div><h2 style="margin-top:8px">${n.t}</h2><p style="white-space:pre-wrap;margin-top:10px;line-height:1.5">${n.x}</p></div></div>`)},
+ pv:d=>show(`<div class="v"><div class="hd"><span class="bk" data-a="root">‹ Thư viện</span></div><div style="flex:1;min-height:560px;${bg(pics()[d.i],+d.i).replace("center/cover","center/contain no-repeat")}"></div></div>`),
+ mute:()=>{const v=$("#wb video");v.muted=!v.muted}};
+/* ===== v2: Instagram + Zalo giống thật ===== */
+const S=(p,o={})=>`<svg viewBox="0 0 24 24" width="${o.w||26}" height="${o.w||26}" fill="${o.f||"none"}" stroke="${o.f?"none":"currentColor"}" stroke-width="${o.sw||1.8}" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const IC={plus:'<path d="M12 4.5v15M4.5 12h15"/>',chev:'<path d="M6 9.5l6 6 6-6"/>',menu:'<path d="M4 8.5h16M4 15.5h16"/>',back:'<path d="M15 5l-7 7 7 7"/>',
+ grid:[3,9.5,16].flatMap(y=>[3,9.5,16].map(x=>`<rect x="${x}" y="${y}" width="5" height="5" rx=".7"/>`)).join(""),
+ tag:'<rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="12" cy="10" r="2.6"/><path d="M6.8 19c.8-3 3-4.2 5.2-4.2s4.4 1.2 5.2 4.2"/>',
+ cam:'<path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l1.3-2h6l1.3 2h1.2A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.5" r="3.7"/>',
+ home:'<path d="M3.5 10.5L12 3.5l8.5 7V20a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z"/>',
+ reel:'<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M3 8.5h18M9 3l3 5.5M15 3l3 5.5"/><path d="M10.5 12.5l4 2.5-4 2.5z"/>',
+ send:'<path d="M21 3L3 10.5l7 2.5 2.5 7.5z"/><path d="M10 13L21 3"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/>',
+ addp:'<circle cx="9" cy="8" r="3.6"/><path d="M2.5 20c.6-4 3.2-6 6.5-6s5.9 2 6.5 6M19 7v6M16 10h6"/>',
+ comp:'<path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"/>',
+ phone:'<path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+ scan:'<path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15M4 12h16"/>'};
+const avs=u=>u?bg(u,2):"background:#8e8e93";
+/* ---- Instagram ---- */
+const igN=t=>`<div class="ign">${[["h","home"],["r","reel"],["d","send"],["s","search"]].map(([k,p])=>`<span data-a="igt" data-t="${k}">${S(IC[p],{w:27})}${k==="d"?'<i class="rd"></i>':""}</span>`).join("")}<span data-a="igt" data-t="p"><span class="ia" style="${avs(ME.avatar)};${t==="p"?"":"border-color:transparent"}"></span></span></div>`;
+PG.ig=()=>{const t=IGT;let b;
+ if(t==="d")b=`<div class="igh"><b>${ME.user} ${S(IC.chev,{w:14})}</b>${S(IC.comp,{w:24})}</div><div class="gh" style="font-size:17px">Tin nhắn</div>${rows("ig")}`;
+ else if(t==="s")b=`<div class="hd"><div class="sr" style="flex:1;margin:0;display:flex;gap:8px;align-items:center">${S(IC.search,{w:18})} Tìm kiếm</div></div><div class="gh" style="font-size:16px">Gần đây</div>${IG.searches.map(s=>`<div class="li">${av()}<div class="tx" style="border:0"><b>${s}</b></div><span>✕</span></div>`).join("")}`;
+ else b=`<div class="igh">${S(IC.plus,{w:28})}<b>${ME.user} ${S(IC.chev,{w:14})}</b>${S(IC.menu,{w:28})}</div>
+<div class="igp"><div class="iga" style="${ME.avatar?bg(ME.avatar,2):""}">${ME.avatar?"":PER}</div><div class="igi"><div class="nm">${ME.name}</div><div class="igs">${[[IG.posts.length,"Bưu kiện"],[IG.followers,"Người theo dõi"],[IG.following,"Đang theo dõi"]].map(x=>`<div><b>${x[0]}</b><span>${x[1]}</span></div>`).join("")}</div></div></div>
+<div class="igbt"><div>Chỉnh sửa hồ sơ</div><div>Chia sẻ hồ sơ</div><div class="sm">${S(IC.addp,{w:20})}</div></div>
+<div class="igtb"><span class="on">${S(IC.grid,{w:24,f:"currentColor"})}</span><span>${S(IC.tag,{w:24})}</span></div>
+${IG.posts.length?`<div class="gr">${IG.posts.map((p,i)=>`<div style="${bg(p,i)}"></div>`).join("")}</div>`:`<div class="ige"><i>${S(IC.cam,{w:44,sw:1.6})}</i><b>Không có bài đăng nào</b></div>`}`;
+ return `<div class="v ig">${b}${igN(t)}</div>`};
+/* ---- Zalo ---- */
+let ZT="m";
+const zTabs=t=>`<div class="zb">${[["m","Tin nhắn",S('<path d="M12 3.6c-4.9 0-8.6 3.1-8.6 7.2 0 2.3 1.2 4.3 3.1 5.6l-.7 4 3.9-2.2c.7.2 1.5.3 2.3.3 4.9 0 8.6-3.1 8.6-7.3S16.9 3.6 12 3.6z"/>'+(t==="m"?'<g fill="#fff" stroke="none"><circle cx="8.3" cy="11" r="1.1"/><circle cx="12" cy="11" r="1.1"/><circle cx="15.7" cy="11" r="1.1"/></g>':""),{w:28,f:t==="m"?"currentColor":0})],["t","Nhật ký",S('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',{w:28})],["p","Cá nhân",`<span class="za" style="${avs(ME.avatar)}"></span>`]].map(([k,l,i])=>`<span data-a="zt" data-t="${k}" style="color:${t===k?"#1f7fff":"#8a8f98"}">${i}<small>${l}</small></span>`).join("")}</div>`;
+PG.zalo=()=>{let b;
+ if(ZT==="p")b=`<div class="zh" style="padding-bottom:12px"><span class="za" style="width:42px;height:42px;${avs(ME.avatar)}"></span><span style="flex:1"><b style="display:block;font-size:17px">${ME.name}</b><small style="opacity:.9">Trang cá nhân</small></span>${S(IC.scan,{w:26})}</div>
+<div class="zg">${[["🛍️","Shop"],["🏛️","eGov"],["🍔","Food"],["💳","ZaloPay"],["🏦","Bank"],["🚌","Giao thông"],["🏨","Khách sạn"],["•••","Xem thêm"]].map(([e,n])=>`<div><span>${e}</span>${n}</div>`).join("")}</div><div class="zgap"></div>
+${[["Chế độ tối",'<i class="tg"></i>'],["Tin nhắn & Cuộc gọi","<em>›</em>"],["Cài đặt & Quyền riêng tư","<em>›</em>"],["Trợ giúp & Hỗ trợ","<em>›</em>"],["Đăng xuất",""]].map(r=>`<div class="z2">${r[0]}${r[1]}</div>`).join("")}`;
+ else if(ZT==="t")b=`<div class="zh"><b style="font-size:19px">Nhật ký</b></div><div class="zemp">Chưa có hoạt động nào</div>`;
+ else b=`<div class="zh">${S(IC.search,{w:23})}<span class="zph">Tìm kiếm</span>${S(IC.plus,{w:26})}</div>${zorder().map(([c,i])=>`<div class="zr${c.pin?" pin":""}" data-a="th" data-k="zalo" data-i="${i}">${zav(c)}<div class="tx"><b>${c.name}</b><span class="s">${zl(c)}</span></div>${c.on?'<i class="on"></i>':`<small>${c.time||ztime(c)}</small>`}${c.pin?`<span class="zpin">${S('<path d="M9 3h6l-.8 5.2L17 11v2h-4.5v5.5L12 20l-.5-1.5V13H7v-2l2.8-2.8z"/>',{w:16,f:"currentColor"})}</span>`:""}</div>`).join("")}`;
+ return `<div class="v z">${b}${zTabs(ZT)}</div>`};
+const zthread=i=>{const c=ZALO[i];let p="",pm=0,ps="",dl="";const mi=t=>/^\d+:\d+$/.test(t)?t.split(":")[0]*60+ +t.split(":")[1]:null;
+return `<div class="v zt"><div class="zh"><span data-a="root">${S(IC.back,{w:26})}</span><b style="flex:1;font-size:18px">${c.name}</b>${S(IC.phone,{w:22})}</div><div class="zth">${c.msgs.map(m=>{if(m[0]==="day"){dl=m[1];p="";pm=0;ps="";return ""}let l="";const t=m[2],x=mi(t);
+ if(t&&(p===""||(x===null?t!==p:(x-pm>=10||x<pm)))){l=`<div class="tm2">${dl?t+" · "+dl:t}</div>`;dl="";p=t;pm=x||0;ps=""}
+ const n=m[0]==="them"&&m[3]?m[3]:"",nm=n&&n!==ps?`<div class="zsn">${n}</div>`:"";ps=m[0]==="them"?n:"";
+ const st=m[1].match(/^h \((.+)\)$/);
+  if(st)return l+nm+`<img class="zst ${m[0]}" src="${st[1]}" alt="sticker" draggable="false" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'bb ${m[0]}',textContent:'[Sticker]'}))">`;
+  return l+nm+`<div class="bb ${m[0]}">${m[1]}</div>`}).join("")}</div><div class="zin">Tin nhắn</div></div>`};
+/* Instagram DM. Tin nhắn trả lời story: thêm phần tử thứ 4 là {story:"photos/xxx.jpg"}
+   ví dụ ["them","Đẹp quá","09:12",{story:"photos/1.jpg"}]; thêm emo:"❤️" nếu chỉ thả cảm xúc; story:"" = tin đã hết hạn */
+const igd=v=>{const d=v.replace(/^.*, /,"");return d+(/^\d+\/\d+$/.test(d)?"/"+NOW.y:"")};
+const igthread=i=>{const c=IGDM[i];let p="",dl="";
+  const ph=S('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',{w:24}),
+        vd=S('<rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3z"/>',{w:26}),
+        rp=S('<path d="M9 14L4 9l5-5M4 9h9a7 7 0 0 1 7 7v3"/>',{w:12});
+  return `<div class="v" style="--me:${TH.ig.me}"><div class="hd ihd"><span class="bk" data-a="root" style="color:#fff">${S(IC.back,{w:26})}</span>${av(c.avatar)}<b>${c.name}</b><span class="ihi">${ph}${vd}</span></div><div class="th">${c.msgs.map(m=>{
+    if(m[0]==="day"){dl=m[1];p="";return ""}
+    const t=m[2],l=t&&t!==p?`<div class="tm2">${dl?igd(dl)+", "+t:t}</div>`:"",o=m[3]&&typeof m[3]==="object"?m[3]:null;if(l){p=t;dl=""}
+    const im=typeof m[1]==="string"&&m[1].match(/^h \((.+)\)$/);
+    if(im)return l+`<img class="igph ${m[0]}" src="${im[1]}" alt="" draggable="false" onerror="this.className+=' ph';this.removeAttribute('src')">`;
+    if(!o)return l+`<div class="bb ${m[0]}">${m[1]}</div>`;
+    const lb=o.label||(m[0]==="me"?`Bạn đã trả lời tin của ${c.name}`:`${c.name} đã trả lời tin của bạn`);
+    return l+`<div class="sr2 ${m[0]}"><div class="srl">${rp}${lb}</div><div class="srs" style="${o.story?bg(o.story,i):""}">${o.story?"":"Tin không còn khả dụng"}</div>${o.emo?`<div class="sre">${o.emo}</div>`:`<div class="bb ${m[0]}">${m[1]}</div>`}</div>`}).join("")}</div><div class="ib">Nhắn tin...</div></div>`};
+const _th=A.th;
+/* mở khung chat (Zalo, SMS, Instagram DM...) -> luôn cuộn xuống tin mới nhất, muốn xem đầu đoạn thì tự cuộn lên */
+const toEnd=()=>{const w=$("#wb");w.style.scrollBehavior="auto";w.scrollTop=w.scrollHeight};
+A.th=d=>{d.k==="zalo"?show(zthread(+d.i)):d.k==="ig"?show(igthread(+d.i)):_th(d);toEnd();requestAnimationFrame(toEnd);$("#wb").querySelectorAll("img").forEach(im=>im.complete||im.addEventListener("load",toEnd,{once:true}))};
+A.zt=d=>{ZT=d.t;render()};
+/* ===== v3: Nhạc, YouTube, Safari, Ảnh ===== */
+const tabI=(t,c,p)=>`<span style="color:${c}">${S(p,{w:27})}${t}</span>`;
+/* ---- Apple Music: bấm bài để phát + màn hình "Đang phát" (file nhạc = phần tử thứ 4 của mỗi bài trong SONGS) ---- */
+let AU=null,AI=-1,AV=1;
+const msrc=i=>SONGS[i]&&SONGS[i][3];
+const mcv=(s,i)=>s[2]?`<div class="cv" style="${bg(s[2],i)}"></div>`:'<div class="cv mn">♫</div>';
+const mIc={play:S('<path d="M7 5l12 7-12 7z"/>',{w:22,f:"currentColor"}),pause:S('<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/>',{w:22,f:"currentColor"}),next:S('<path d="M5 5l9 7-9 7zM16 5h3v14h-3z"/>',{w:22,f:"currentColor"})};
+const nIc={prev:S('<path d="M19 5L10 12l9 7zM8 5H5v14h3z"/>',{w:38,f:"currentColor"}),next:S('<path d="M5 5l9 7-9 7zM16 5h3v14h-3z"/>',{w:38,f:"currentColor"}),play:S('<path d="M7 4.5l13 7.5-13 7.5z"/>',{w:52,f:"currentColor"}),pause:S('<path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/>',{w:52,f:"currentColor"})};
+const fmt=t=>{t=Math.max(0,Math.floor(t||0));return Math.floor(t/60)+":"+String(t%60).padStart(2,"0")};
+const mplHtml=()=>AI<0?"":`<div class="mpl" data-a="npo">${mcv(SONGS[AI],AI)}<b>${SONGS[AI][0]}</b><span data-a="mp">${AU&&!AU.paused?mIc.pause:mIc.play}</span><span data-a="mn">${mIc.next}</span></div>`;
+const mNext=(i,step=1)=>{for(let j=i+step;j>=0&&j<SONGS.length;j+=step)if(msrc(j))return j;return -1};
+
+/* màn hình Đang phát */
+$("#win").insertAdjacentHTML("beforeend",'<div id="np"></div>');
+function npHide(){const n=$("#np");n&&n.classList.remove("open")}
+function npT(){if(!$("#np")||!AU)return;const d=AU.duration||0,c=AU.currentTime||0,f=$("#npf"),e=$("#npe"),r=$("#npr");
+  if(f)f.style.width=(d?c/d*100:0)+"%";if(e)e.textContent=fmt(c);if(r)r.textContent="-"+fmt(d-c)}
+function npState(){const n=$("#np"),p=!!AU&&!AU.paused;if(!n)return;n.classList.toggle("playing",p);const b=$("#npplay");if(b)b.innerHTML=p?nIc.pause:nIc.play}
+function npRender(){const n=$("#np"),s=SONGS[AI];if(!n||!s)return;
+  n.innerHTML=`<div class="npbg" style="${s[2]?`background-image:url('${s[2]}')`:""}"></div><div class="npw">
+<div class="npg" data-a="npc"></div>
+<div class="npa"><div class="npart" style="${bg(s[2],AI)}"></div></div>
+<div class="npt"><div><b>${s[0]}</b><span>${s[1]}</span></div><i>★</i><i>•••</i></div>
+<div class="npb" id="npb"><div class="npf" id="npf"></div></div>
+<div class="npm"><span id="npe">0:00</span><span id="npr">-0:00</span></div>
+<div class="npc2"><span data-a="npp">${nIc.prev}</span><span data-a="mp" id="npplay"></span><span data-a="mn">${nIc.next}</span></div>
+<div class="npv">${S('<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/>',{w:18,f:"currentColor"})}<input type="range" id="npv" min="0" max="1" step="0.01" value="${AV}">${S('<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12"/>',{w:22})}</div>
+<div class="npx">${S('<path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M8 10h8M8 13h5"/>',{w:26})}${S('<path d="M7 18H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/><path d="M12 14l5 6H7z"/>',{w:26})}${S('<path d="M4 7h12M4 12h12M4 17h8M18 14v5l3-2.5z"/>',{w:26})}</div></div>`;
+  const b=$("#npb");b.onpointerdown=e=>{b.setPointerCapture(e.pointerId);npSeek(e);b.onpointermove=npSeek};b.onpointerup=b.onpointercancel=()=>{b.onpointermove=null};
+  $("#npv").oninput=e=>{AV=+e.target.value;if(AU)AU.volume=AV};
+  npState();npT()}
+function npSeek(e){const b=$("#npb");if(!b||!AU||!AU.duration)return;const r=b.getBoundingClientRect();AU.currentTime=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width))*AU.duration;npT()}
+(()=>{const n=$("#np");let y=null;
+  n.addEventListener("click",e=>{const t=e.target.closest("[data-a]");if(t&&A[t.dataset.a])A[t.dataset.a](t.dataset)});
+  n.addEventListener("pointerdown",e=>{y=e.target.closest("#npb,input")?null:e.clientY});
+  n.addEventListener("pointerup",e=>{if(y!==null&&e.clientY-y>90)npHide();y=null})})();
+
+const muUI=()=>{const m=$("#mpl");if(m)m.innerHTML=mplHtml();document.querySelectorAll(".mr").forEach((r,i)=>r.classList.toggle("on",i===AI&&!!AU&&!AU.paused));if(AI<0)npHide();npState()};
+function mPlay(i){
+  if(!msrc(i))return;if(VA)VA.pause();
+  if(i===AI&&AU){AU.paused?AU.play().catch(()=>{}):AU.pause();return muUI()}
+  if(AU){AU.pause();AU.onpause=AU.onplay=AU.onended=AU.onerror=AU.ontimeupdate=AU.ondurationchange=null}
+  AI=i;AU=new Audio(msrc(i));AU.volume=AV;
+  AU.onplay=AU.onpause=muUI;AU.ontimeupdate=AU.ondurationchange=npT;
+  AU.onended=()=>{const j=mNext(AI);j<0?(AU=null,AI=-1,muUI()):mPlay(j)};
+  AU.onerror=()=>{AU=null;AI=-1;muUI()};
+  AU.play().catch(()=>{});
+  if($("#np.open"))npRender();
+  muUI();
+}
+Object.assign(A,{
+  ms:d=>mPlay(+d.i),
+  mall:()=>{const j=mNext(-1);if(j>=0)mPlay(j)},
+  mshuf:()=>{const l=SONGS.map((_,i)=>i).filter(msrc);if(l.length)mPlay(l[Math.floor(Math.random()*l.length)])},
+  mp:()=>{if(AU){if(AU.paused&&VA)VA.pause();AU.paused?AU.play().catch(()=>{}):AU.pause()}},
+  mn:()=>{const j=mNext(AI);if(j>=0)mPlay(j)},
+  npp:()=>{if(!AU)return;if(AU.currentTime>3){AU.currentTime=0;return}const j=mNext(AI,-1);j>=0?mPlay(j):(AU.currentTime=0)},
+  npo:()=>{if(AI<0)return;npRender();$("#np").classList.add("open")},
+  npc:npHide
+});
+/* ---- Ghi âm: bấm bản ghi để nghe (file âm thanh = phần tử thứ 4 trong RECS) ---- */
+let VR=-1,VA=null;
+const vsec=t=>{const p=String(t).split(":").map(Number);return p.length===2?p[0]*60+p[1]:p.length===3?p[0]*3600+p[1]*60+p[2]:0};
+const vdur=()=>VA&&isFinite(VA.duration)&&VA.duration>0?VA.duration:vsec(RECS[VR][2]);
+const vbars=(txt,n=64)=>{let x=[...txt].reduce((a,c)=>a+c.charCodeAt(0),7),o="";for(let k=0;k<n;k++){x=(x*9301+49297)%233280;const e=.35+.65*Math.sqrt(Math.sin(Math.PI*(k+.5)/n));o+=`<i style="height:${Math.round(12+x/233280*88*e)}%"></i>`}return o};
+const vIc={play:S('<path d="M7 4.5l13 7.5-13 7.5z"/>',{w:46,f:"currentColor"}),pause:S('<path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/>',{w:46,f:"currentColor"}),
+  back:'<svg viewBox="0 0 24 24" width="36" height="36"><path d="M12 5V2L7 6l5 4V7a6 6 0 1 1-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.8" font-size="7.5" text-anchor="middle" fill="currentColor" font-weight="700">15</text></svg>',
+  fwd:'<svg viewBox="0 0 24 24" width="36" height="36"><path d="M12 5V2l5 4-5 4V7a6 6 0 1 0 6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="12" y="16.8" font-size="7.5" text-anchor="middle" fill="currentColor" font-weight="700">15</text></svg>'};
+const vmList=()=>RECS.map((r,i)=>`<div class="vmr${VR===i?" open":""}"><div class="li" data-a="vo" data-i="${i}"><div class="tx"><b>${r[0]}</b><div class="r"><small>${r[1]}</small><small>${r[2]}</small></div></div></div>${VR===i?`<div class="vpl"><div class="vwf" id="vwf">${vbars(r[0])}<s class="vph" id="vph"></s></div><div class="vtm"><span id="vte">0:00</span><span id="vtr">-${fmt(vsec(r[2]))}</span></div><div class="vc"><span data-a="vb">${vIc.back}</span><span data-a="vpp" id="vppb"></span><span data-a="vf">${vIc.fwd}</span></div></div>`:""}</div>`).join("");
+function vmT(){const w=$("#vwf");if(!w||VR<0)return;const d=vdur(),c=VA?VA.currentTime:0,p=d?Math.min(1,c/d):0,n=w.children.length-1;
+  for(let k=0;k<n;k++)w.children[k].classList.toggle("on",k/n<p);
+  $("#vph").style.left=p*100+"%";$("#vte").textContent=fmt(c);$("#vtr").textContent="-"+fmt(d-c)}
+function vmS(){const b=$("#vppb");if(b)b.innerHTML=VA&&!VA.paused?vIc.pause:vIc.play}
+function vmUI(){const e=$("#vml");if(e){e.innerHTML=vmList();vmT();vmS()}}
+function vmReset(){if(VA){VA.pause();VA.ontimeupdate=VA.ondurationchange=VA.onplay=VA.onpause=VA.onended=VA.onerror=null}VA=null;VR=-1}
+function vmOpen(i){
+  if(VR===i){vmReset();return vmUI()}
+  vmReset();VR=i;const src=RECS[i][3];
+  if(src){VA=new Audio(src);VA.ontimeupdate=VA.ondurationchange=vmT;VA.onplay=VA.onpause=vmS;
+    VA.onended=()=>{VA.currentTime=0;vmS();vmT()};VA.onerror=()=>{VA=null;vmS()}}
+  vmUI()}
+Object.assign(A,{
+  vo:d=>vmOpen(+d.i),
+  vpp:()=>{if(!VA)return;if(AU&&!AU.paused)AU.pause();VA.paused?VA.play().catch(()=>{}):VA.pause()},
+  vb:()=>{if(VA){VA.currentTime=Math.max(0,VA.currentTime-15);vmT()}},
+  vf:()=>{if(VA){VA.currentTime=Math.min(vdur(),VA.currentTime+15);vmT()}}
+});
+$("#wb").addEventListener("pointerdown",e=>{const w=e.target.closest(".vwf");if(!w||!VA)return;
+  const sk=ev=>{const r=w.getBoundingClientRect();VA.currentTime=Math.min(1,Math.max(0,(ev.clientX-r.left)/r.width))*vdur();vmT()};
+  w.setPointerCapture(e.pointerId);sk(e);w.onpointermove=sk;w.onpointerup=w.onpointercancel=()=>{w.onpointermove=null}});
+PG.mu=()=>{const R="#ff2d55";return `<div class="v lm"><div class="hd"><span style="color:#0a84ff;display:flex;align-items:center;gap:2px;font-size:18px">${S(IC.back,{w:22,sw:2.8})}Thư viện</span></div><div class="mt">Bài hát</div>
+<div class="mb"><div data-a="mall">${S('<path d="M7 5l12 7-12 7z"/>',{w:13,f:"currentColor"})}Phát</div><div data-a="mshuf">${S('<path d="M3 7h3l9 10h6M3 17h3l3-3.5M15 7h6M18 4l3 3-3 3M18 14l3 3-3 3"/>',{w:16,sw:2.4})}Trộn bài</div></div>
+${SONGS.map((s,i)=>`<div class="mr${AI===i&&AU&&!AU.paused?" on":""}" data-a="ms" data-i="${i}">${mcv(s,i)}<div class="tx"><div>${s[0]}</div><span>${s[1]}</span></div><em>•••</em></div>`).join("")}
+<div class="mbot"><div id="mpl">${mplHtml()}</div><div class="mtb">${tabI("Nghe ngay","#8e8e93",'<circle cx="12" cy="12" r="9.5"/><path d="M10 8.5l6 3.5-6 3.5z"/>')}${tabI("Duyệt","#8e8e93",'<rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/>')}${tabI("Radio","#8e8e93",'<circle cx="12" cy="12" r="2"/><path d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7M5.5 5.5a9 9 0 0 0 0 13M18.5 5.5a9 9 0 0 1 0 13"/>')}${tabI("Thư viện",R,'<path d="M5 4v16M10 4v16M14.5 4.5l5 15" stroke-width="2.4"/>')}${tabI("Tìm kiếm","#8e8e93",IC.search)}</div></div></div>`};
+PG.yt=()=>{const W={w:26,sw:1.9};return `<div class="v yt"><div class="yh">${S(IC.back,{w:30,sw:2.2})}<div class="yp"><span>${YT.q}</span><span>✕</span></div>${S('<rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',{w:26})}${S('<circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/>',{w:22,f:"currentColor"})}</div>
+<div class="ych">${YT.chips.map((c,i)=>`<span class="${i?"":"on"}">${c}</span>`).join("")}</div>
+<div class="yg">${YT.videos.map((v,i)=>`<div><div class="yv" style="${bg(v[0],i+3)}">${v[0]?"":v[1]}</div><div class="ym"><i style="${bg(v[4]||"",i+7)}"></i><div><b>${v[2]}</b>${v[3]}</div></div></div>`).join("")}</div>
+<div class="ynb"><span>${S('<path d="M12 3l9 7.5V21h-6v-6H9v6H3V10.5z"/>',{w:26,f:"#fff"})}trang chủ</span><span>${S('<rect x="6" y="3" width="12" height="18" rx="4"/><path d="M10.5 9.5l4 2.5-4 2.5z"/>',W)}Quần short</span><span><i class="pl2">${S(IC.plus,{w:24,sw:2.2})}</i></span><span>${S('<rect x="3" y="8" width="18" height="12" rx="2.5"/><path d="M6 5h12M8 2.5h8M10.5 12l4 2.5-4 2.5z"/>',W)}đặt mua</span><span><i style="width:26px;height:26px;border-radius:50%;border:1px solid #333;${YT.me?bg(YT.me,0):"background:#000"}"></i>Trang của tôi</span></div></div>`};
+PG.gg=()=>`<div class="v sf"><div class="sfh"><div class="sfs">${S(IC.search,{w:18})}<u></u>Tìm kiếm hoặc nhập tên trang web</div><span class="bl">Hủy</span></div><div class="sft"><b>Tìm kiếm gần đây</b><span class="bl">Xóa</span></div><div class="sfl">${SEARCHES.map(q=>`<div class="sfr">${S('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',{w:19})}<div>${q}</div></div>`).join("")}</div></div>`;
+const mlab=n=>{const d=new Date(D.getFullYear(),D.getMonth()-n,1);return `tháng ${d.getMonth()+1} năm ${d.getFullYear()}`};
+PG.ph=()=>{const L=albSecs(),n=L.reduce((a,x)=>a+x.items.length,0);
+ const sec=L.map(x=>`<div class="phm">${x.label}</div><div class="gr ph3">${x.items.map((p,j)=>`<div data-a="pv" data-i="${x.start+j}" style="${bg(p,x.start+j)}"></div>`).join("")}</div>`);
+ return `<div class="v lp"><div class="phc">Chọn</div><div class="pht">Thư viện</div><div class="phn">${n} ảnh</div>${sec.join("")}<div class="phs"><span>Năm</span><span>Tháng</span><span class="on">Tất cả ảnh</span></div></div>`};
+A.pv=d=>{const P=pics(),i=+d.i,go=n=>`$('#pvs').scrollBy({left:${n}*$('#pvs').clientWidth,behavior:'smooth'})`;
+ show(`<div class="v lp" style="height:100%"><div class="hd" style="background:#fff"><span class="bk" data-a="root">‹ Thư viện</span><b id="pvc">${i+1} / ${P.length}</b><span style="width:70px"></span></div><div class="pvs" id="pvs">${P.map((s,j)=>`<div style="${s?`background:url('${s}') center/contain no-repeat #fff`:bg("",j)}"></div>`).join("")}</div><div class="pva"><span id="pvl" onclick="${go(-1)}">‹</span><span id="pvr" onclick="${go(1)}">›</span></div></div>`);
+ const c=$("#pvs"),sync=()=>{const k=Math.round(c.scrollLeft/c.clientWidth);$("#pvc").textContent=(k+1)+" / "+P.length;$("#pvl").style.visibility=k<=0?"hidden":"visible";$("#pvr").style.visibility=k>=P.length-1?"hidden":"visible"};
+ c.scrollLeft=i*c.clientWidth;sync();c.onscroll=sync;
+ /* cảm ứng đã vuốt được sẵn; thêm kéo bằng chuột cho máy tính */
+ let x0=null,s0=0;
+ c.onpointerdown=e=>{if(e.pointerType!=="mouse")return;x0=e.clientX;s0=c.scrollLeft;c.style.scrollSnapType="none";c.setPointerCapture(e.pointerId)};
+ c.onpointermove=e=>{if(x0!==null)c.scrollLeft=s0-(e.clientX-x0)};
+ c.onpointerup=c.onpointercancel=e=>{if(x0===null)return;const mv=e.clientX-x0,w=c.clientWidth;x0=null;c.style.scrollSnapType="";
+  const k=Math.round(s0/w)+(Math.abs(mv)>w*.15?(mv<0?1:-1):0);c.scrollTo({left:Math.min(P.length-1,Math.max(0,k))*w,behavior:"smooth"})}};
+/* ===== v4: TikTok ===== */
+let TTV="f";
+const ttI={home:'<path d="M4 11L12 3.5 20 11v8.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/>',
+ inb:'<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-6l-4 3.5V17H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M8 11h.01M12 11h.01M16 11h.01" stroke-width="2.6"/>',
+ per:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.5 3.5-7 8-7s8 2.5 8 7z"/>',
+ bars:'<path d="M5 4v16M10.5 4v16M16 4v16" stroke-dasharray="4 3" stroke-width="2.4"/>',rep:'<path d="M4 11V9a3 3 0 0 1 3-3h10l-3-3M20 13v2a3 3 0 0 1-3 3H7l3 3"/>',
+ play:'<path d="M7 5l12 7-12 7z"/>'};
+const ttBg=(u,i)=>`background:${u?`url('${u}') center/cover,`:""}${phg(i)}`;
+const ttNav=m=>{const f=!m,k=m?"#fff":"#000";return `<div class="ttn" style="background:${m?"#fff":"#000"};color:${m?"#000":"#fff"};${m?"border-top:1px solid #ddd":""}"><span data-a="tv" data-t="f">${S(ttI.home+(f?`<path d="M12 11.5v4" stroke="#000" stroke-width="2.2"/>`:`<path d="M12 11.5v4" stroke-width="2.2"/>`),{w:28,f:f?"#fff":0})}Home</span>
+<span><svg viewBox="0 0 28 28" width="32" height="32"><polygon points="14,1 17,6 23,4 22,10 27,13 22,17 23,23 17,21 14,27 11,21 5,23 6,17 1,13 6,10 5,4 11,6" fill="#8c8c8c"/><text x="14" y="17" font-size="8.5" font-weight="800" fill="#fff" text-anchor="middle">11.11</text></svg><i class="rd2"></i>Shop</span>
+<span data-a="tv" data-t="f"><i class="pls" style="--c:${m?"#000":"#fff"};--k:${m?"#fff":"#000"}">+</i></span><span>${S(ttI.inb,{w:28})}<b class="b99">99+</b>Inbox</span>
+<span data-a="tv" data-t="m">${S(ttI.per,{w:28,f:m?"#000":0})}Profile</span></div>`};
+const ttPost=(p,i)=>`<div style="${ttBg(p[0],i)}">${p[2]?`<b>${p[2]}</b>`:""}<span>${p[2]?S('<rect x="4" y="7" width="16" height="12" rx="2"/><path d="M7 4h10"/>',{w:17,sw:2}):S(ttI.play,{w:15,sw:2})}${p[1]}</span></div>`;
+const ttFeed=()=>{const T=TIKTOK,cp=T.cap.split("\n");
+ const media=T.src?`<video src="${T.src}" data-a="mute" autoplay loop muted playsinline></video>`:"";
+ return `<div class="v tt" style="height:100%;background:#000"><div class="ttm" style="${T.src?"":ttBg(T.img,5)}">${media}</div>
+<div class="tth"><span class="lv">LIVE</span><div class="tts"><span>Ho Chi Minh</span><span>Friends<i>8</i></span><span>Following</span><span class="on">For You</span></div>${S(IC.search,{w:28,sw:2.2})}</div>
+<div class="gf">🎁<span>Nhấp ngay<br>có thưởng</span></div>
+${T.src?"":'<div class="ttd"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>'}
+<div class="ttr"><div class="tav" data-a="tv" data-t="o"><b style="${avs(T.avatar)}"></b>${T.followed?"":"<i>+</i>"}</div>
+<div>${S('<path d="M12 21C5 15.5 2.5 12 2.5 8.5A5 5 0 0 1 12 6a5 5 0 0 1 9.5 2.5C21.5 12 19 15.5 12 21z"/>',{w:42,f:"#fff"})}${T.likes}</div>
+<div>${S('<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-6l-4 3.5V17H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><circle cx="8" cy="11" r="1.3" fill="#777"/><circle cx="12" cy="11" r="1.3" fill="#777"/><circle cx="16" cy="11" r="1.3" fill="#777"/>',{w:40,f:"#fff"})}${T.cmts}</div>
+<div>${S('<path d="M6 3h12v18l-6-4.5L6 21z"/>',{w:40,f:"#fff"})}${T.saves}</div>
+<div>${S('<path d="M14 4l8 8-8 8v-5c-6 0-9 2-11 5 1-7 5-11 11-11z"/>',{w:40,f:"#fff"})}${T.shares}</div><div class="dsc"></div></div>
+<div class="ttb"><div class="rp"><i style="${avs(T.repostAvatar||ME.avatar)}"></i><u>${T.repost} reposted</u></div>${cp[0]}${T.src?"":"<em>▣ Photo</em>"}${cp[1]?`<br>${cp[1]}`:""}<small>See translation</small><p>♫ ${T.song}</p></div>
+<div class="ttq"><span>${S(IC.search,{w:17,sw:2.4})} Search · ${T.search}</span><span>›</span></div>${ttNav(0)}</div>`};
+const ttProf=(o,me)=>{const D3=me?"":"";return `<div class="v ttl tpw"><div class="tps">
+<div class="tph">${me?`<div>${S('<path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"/>',{w:26})}<span style="width:36px;height:36px;border-radius:50%;background:#f5a800;color:#fff;display:grid;place-items:center;font-weight:800">P</span></div><div><span style="background:#f1f1f2;border-radius:20px;padding:6px 12px;font-weight:800">10</span>${S(IC.addp.replace(/M19 7v6M16 10h6/,"M19 15v6M16 18h6"),{w:26})}${S(IC.menu.replace("8.5","7").replace("15.5","12")+'<path d="M4 17h16"/>',{w:28,sw:2.2})}</div>`:`<span data-a="tv" data-t="f">${S(IC.back,{w:28,sw:2.2})}</span><div>${S('<path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4zM10 21h4"/>',{w:26})}${S('<path d="M14 4l7 7-7 7v-4c-6 0-9 2-11 5 1-7 5-10 11-10z"/>',{w:26})}</div>`}</div>
+<div class="tpn"><div><h1>${o.name}${me?S('<path d="M7 10l5 5 5-5z"/>',{w:20,f:"#000"}):""}</h1><small>@${o.user}</small></div><div class="tpa ${me?"":"rg"}" style="${ttBg(o.avatar,2)}">${me?"<i>+</i>":""}</div></div>
+<div class="tpst"><div><b>${o.following}</b><span>Following</span></div><div><b>${o.followers}</b><span>Followers</span></div><div><b>${o.total}</b><span>Likes</span></div></div>
+${me?"":`<div class="tpb">${TIKTOK.followed?"":'<div class="fl">Follow</div>'}<div class="ms">Message</div><div class="ad">${S(IC.addp.replace(/M19 7v6M16 10h6/,"M19 8v6M16 11h6"),{w:22,f:"#000"})}</div></div>`}
+<div class="tpbio" style="margin-top:${me?"8px":"0"}">${o.bio}</div>
+${me?`<div class="tpc"><span>TikTok Studio</span><span>Your orders</span><span>Watch history</span></div>`:`<div class="tphl">${o.highlights.map(h=>{const [n,im]=Array.isArray(h)?h:[h,""];return `<div><i style="${im?bg(im,3):""}"></i>${n}</div>`}).join("")}</div>`}
+<div class="tpt"><span class="on">${S(ttI.bars,{w:26})}▾</span>${me?`<span>${S('<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',{w:26})}</span>`:""}<span>${S(ttI.rep,{w:26})}</span>${me?`<span>${S('<path d="M6 3h12v18l-6-4.5L6 21z"/>',{w:24})}</span><span>${S('<path d="M12 20C5 15 3 12 3 8.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 2.5C21 12 19 15 12 20z"/>',{w:26})}</span>`:""}</div>
+<div class="tpg">${o.posts.map(ttPost).join("")}</div>${me?'<div class="tpe">No more results</div>':""}</div>${me?ttNav(1):""}</div>`};
+PG.tt=()=>{$("#phone").classList.toggle("lt",TTV!=="f");return TTV==="o"?ttProf(TIKTOK.prof,0):TTV==="m"?ttProf(TTME,1):ttFeed()};
+A.tv=d=>{TTV=d.t;render()};
+let sx=null,sy=0;const ds=e=>{const p=e.touches?e.touches[0]:e;sx=p.clientX;sy=p.clientY},de=e=>{if(sx===null)return;const p=e.changedTouches?e.changedTouches[0]:e,dx=p.clientX-sx,dy=p.clientY-sy;sx=null;
+ if(cur&&cur.page==="tt"&&Math.abs(dx)>60&&Math.abs(dy)<50){if(dx<0&&TTV==="f"){TTV="o";render()}else if(dx>0&&TTV==="o"){TTV="f";render()}}};
+$("#wb").addEventListener("touchstart",ds,{passive:true});$("#wb").addEventListener("touchend",de);$("#wb").addEventListener("mousedown",ds);addEventListener("mouseup",de);
+/* ===== v5: Zalo nhóm (tên người nhắn) ===== */
+const zl=c=>{const m=c.msgs[c.msgs.length-1];return m?(m[0]==="me"?"Bạn: ":m[3]?m[3]+": ":"")+(/^h \(.+\)$/.test(m[1])?"[Sticker]":m[1]):""};
+$("#wb").addEventListener("click",e=>{const t=e.target.closest("[data-a]");if(t&&A[t.dataset.a])A[t.dataset.a](t.dataset)});
+function openApp(a,el){
+  const r=el.getBoundingClientRect(),p=$("#phone").getBoundingClientRect(),k=p.width/390,w=$("#win");
+  w.style.setProperty("--ox",((r.left+r.width/2-p.left)/k)+"px");w.style.setProperty("--oy",((r.top+r.height/2-p.top)/k)+"px");
+  cur=a;IGT="p";ZT="m";TTV="f";render();$("#phone").classList.add("app");w.classList.add("open");$("#home").classList.add("back");
+}
+function closeApp(){vmReset();npHide();$("#phone").classList.remove("app","zl","lt");$("#win").classList.remove("open");$("#home").classList.remove("back")}
+document.addEventListener("click",e=>{const el=e.target.closest(".app");if(!el)return;
+  const a=ALL.find(x=>x.n===el.dataset.n);if(a)openApp(a,el)});
+
+/* mở khóa: vuốt lên hoặc bấm vào thanh/tình huống */
+/* vuốt lên: chạm vào bất kỳ đâu trong vùng, kéo lên quá "min" điểm ảnh là kích hoạt */
+function swipeUp(el,o){let y=null,go=false,hit=false;
+  const st=v=>{y=v;hit=false;go=o.ok?o.ok():true},mv=v=>{if(y!==null&&go&&!hit&&y-v>(o.min||30)){hit=true;o.fn()}},en=()=>{y=null};
+  el.addEventListener("touchstart",e=>st(e.touches[0].clientY),{passive:true});
+  el.addEventListener("touchmove",e=>mv(e.touches[0].clientY),{passive:true});
+  el.addEventListener("touchend",en);el.addEventListener("touchcancel",en);
+  el.addEventListener("mousedown",e=>st(e.clientY));
+  el.addEventListener("mousemove",e=>{if(e.buttons)mv(e.clientY)});
+  addEventListener("mouseup",en)}
+const L=$("#lock");
+swipeUp(L,{min:25,fn:showPC});
+L.addEventListener("dblclick",showPC);
+$("#bar").addEventListener("click",()=>{if(!$("#lock").classList.contains("off")){if(!$("#pc").classList.contains("show"))showPC()}else if($("#win").classList.contains("open"))closeApp()});
+$("#power").addEventListener("click",lock);
+document.addEventListener("keydown",e=>{
+  const locked=!$("#lock").classList.contains("off"),pc=$("#pc").classList.contains("show");
+  if(locked&&!pc&&(e.key==="Enter"||e.key===" "||e.key==="ArrowUp"))showPC();
+  else if(pc){if(/^\d$/.test(e.key))press(e.key);else if(e.key==="Backspace")back();else if(e.key==="Escape")hidePC()}
+  else if(e.key==="Escape")closeApp()});
+
+/* vuốt lên từ mép dưới để thoát app (bấm vào thanh ngang cũng được) */
+swipeUp($("#gz"),{min:15,fn:closeApp});
+swipeUp($("#win"),{min:45,fn:closeApp,ok:()=>{const w=$("#wb");return $("#win").classList.contains("open")&&!$("#np.open")&&w.scrollHeight-w.scrollTop-w.clientHeight<6}});
+/* co giãn vừa màn hình */
+function fit(){const s=Math.min(innerWidth/410,innerHeight/870,1.2);$("#scaler").style.transform=`scale(${s})`}
+fit();addEventListener("resize",fit);
+</script>
+</body>
+</html>
